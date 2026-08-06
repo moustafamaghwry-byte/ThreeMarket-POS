@@ -1,0 +1,18 @@
+# Dependencies
+node_modules/
+
+# Build
+dist/
+
+# Database
+*.db
+*.sqlite
+
+# Environment
+.env
+
+# Logs
+*.log
+
+# VS Code
+.vscode/
