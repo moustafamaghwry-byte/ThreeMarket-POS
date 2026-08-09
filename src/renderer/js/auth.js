@@ -28,18 +28,23 @@ loginForm?.addEventListener("submit", async (event) => {
         console.log("Login result:", result);
 
         if (result.success) {
-            loginMessage.textContent =
-                `Welcome ${result.user.username}`;
 
-            console.log("Authenticated user:", result.user);
+            console.log(
+                "Authenticated user:",
+                result.user
+            );
 
-            // Dashboard will be connected here next.
+            // Navigate to Dashboard through Electron
+            await window.api.navigateToDashboard();
+
         } else {
+
             loginMessage.textContent =
                 result.message;
         }
 
     } catch (error) {
+
         console.error("Login error:", error);
 
         loginMessage.textContent =

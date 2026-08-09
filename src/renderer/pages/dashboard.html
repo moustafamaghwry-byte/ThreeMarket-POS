@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>ThreeMarket POS</title>
+
+    <link rel="stylesheet" href="/css/reset.css">
+    <link rel="stylesheet" href="/css/variables.css">
+    <link rel="stylesheet" href="/css/themes.css">
+    <link rel="stylesheet" href="/css/dashboard.css">
+</head>
+
+<body>
+
+    <div class="app-layout">
+
+        <!-- Sidebar -->
+        <aside class="sidebar">
+
+            <div class="sidebar-brand">
+                <div class="brand-icon">🛒</div>
+
+                <div>
+                    <strong>ThreeMarket</strong>
+                    <span>POS</span>
+                </div>
+            </div>
+
+            <nav class="sidebar-nav">
+
+                <button class="nav-item active" data-page="dashboard">
+                    <span>📊</span>
+                    <span data-i18n="nav.dashboard">Dashboard</span>
+                </button>
+
+                <button class="nav-item" data-page="sales">
+                    <span>🛒</span>
+                    <span data-i18n="nav.sales">Sales</span>
+                </button>
+
+                <button class="nav-item" data-page="products">
+                    <span>📦</span>
+                    <span data-i18n="nav.products">Products</span>
+                </button>
+
+                <button class="nav-item" data-page="inventory">
+                    <span>🏷️</span>
+                    <span data-i18n="nav.inventory">Inventory</span>
+                </button>
+
+                <button class="nav-item" data-page="customers">
+                    <span>👥</span>
+                    <span data-i18n="nav.customers">Customers</span>
+                </button>
+
+                <button class="nav-item" data-page="suppliers">
+                    <span>🚚</span>
+                    <span data-i18n="nav.suppliers">Suppliers</span>
+                </button>
+
+                <button class="nav-item" data-page="reports">
+                    <span>📈</span>
+                    <span data-i18n="nav.reports">Reports</span>
+                </button>
+
+                <button class="nav-item" data-page="settings">
+                    <span>⚙️</span>
+                    <span data-i18n="nav.settings">Settings</span>
+                </button>
+
+            </nav>
+
+            <div class="sidebar-footer">
+
+                <button id="logoutButton" class="logout-button">
+                    🚪
+                    <span data-i18n="nav.logout">Logout</span>
+                </button>
+
+            </div>
+
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+
+            <!-- Top Bar -->
+            <header class="topbar">
+
+                <div>
+                    <h1 data-i18n="dashboard.title">
+                        Dashboard
+                    </h1>
+
+                    <p data-i18n="dashboard.welcome">
+                        Welcome to ThreeMarket POS
+                    </p>
+                </div>
+
+                <div class="user-area">
+
+                    <div class="user-info">
+                        <strong id="currentUsername">
+                            Admin
+                        </strong>
+
+                        <span id="currentRole">
+                            Administrator
+                        </span>
+                    </div>
+
+                    <button
+                        id="languageButton"
+                        class="language-button"
+                    >
+                        العربية
+                    </button>
+
+                </div>
+
+            </header>
+
+            <!-- Dashboard -->
+            <section class="dashboard-content">
+
+                <div class="stat-grid">
+
+                    <!-- Sales -->
+                    <article class="stat-card">
+
+                        <span>💰</span>
+
+                        <div>
+                            <small data-i18n="dashboard.sales">
+                                Today's Sales
+                            </small>
+
+                            <strong id="todaySales">
+                                0.00
+                            </strong>
+                        </div>
+
+                    </article>
+
+                    <!-- Transactions -->
+                    <article class="stat-card">
+
+                        <span>🧾</span>
+
+                        <div>
+                            <small data-i18n="dashboard.transactions">
+                                Transactions
+                            </small>
+
+                            <strong id="todayTransactions">
+                                0
+                            </strong>
+                        </div>
+
+                    </article>
+
+                    <!-- Products -->
+                    <article class="stat-card">
+
+                        <span>📦</span>
+
+                        <div>
+                            <small data-i18n="dashboard.products">
+                                Products
+                            </small>
+
+                            <strong id="totalProducts">
+                                0
+                            </strong>
+                        </div>
+
+                    </article>
+
+                    <!-- Low Stock -->
+                    <article class="stat-card">
+
+                        <span>⚠️</span>
+
+                        <div>
+                            <small data-i18n="dashboard.lowStock">
+                                Low Stock
+                            </small>
+
+                            <strong id="lowStock">
+                                0
+                            </strong>
+                        </div>
+
+                    </article>
+
+                </div>
+
+                <!-- Welcome -->
+                <section class="welcome-card">
+
+                    <h2 data-i18n="dashboard.ready">
+                        Ready to manage your business?
+                    </h2>
+
+                    <p data-i18n="dashboard.description">
+                        ThreeMarket POS provides a unified retail
+                        management platform for different types
+                        of businesses.
+                    </p>
+
+                </section>
+
+            </section>
+
+        </main>
+
+    </div>
+
+    <script type="module" src="/js/dashboard.js"></script>
+
+</body>
+
+</html>

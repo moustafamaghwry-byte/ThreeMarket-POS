@@ -11,5 +11,8 @@ contextBridge.exposeInMainWorld("api", {
         ipcRenderer.invoke("session:get"),
 
     logout: () =>
-        ipcRenderer.invoke("session:logout")
+        ipcRenderer.invoke("session:logout"),
+
+    navigateToDashboard: () =>
+        ipcRenderer.invoke("navigate:dashboard")
 });
