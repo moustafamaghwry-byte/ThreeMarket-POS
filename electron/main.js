@@ -1,24 +1,37 @@
-const { app, BrowserWindow } = require("electron");
+const { app, BrowserWindow, ipcMain } = require("electron");
 const path = require("path");
 
-const isDev = !app.isPackaged;
+const authService = require("../src/services/auth.service");
 
 function createWindow() {
     const win = new BrowserWindow({
         width: 1400,
         height: 900,
+        minWidth: 1200,
+        minHeight: 700,
+        autoHideMenuBar: true,
+
         webPreferences: {
             preload: path.join(__dirname, "preload.js"),
-            contextIsolation: true
+            contextIsolation: true,
+            nodeIntegration: false
         }
     });
 
-    if (isDev) {
-        win.loadURL("http://localhost:5173");
-        win.webContents.openDevTools();
-    } else {
-        win.loadFile(path.join(__dirname, "../dist/index.html"));
-    }
+    win.loadURL("http://localhost:5173/");
 }
 
+ipcMain.handle("auth:login", async (event, credentials) => {
+    return authService.login(
+        credentials.username,
+        credentials.password
+    );
+});
+
 app.whenReady().then(createWindow);
+
+app.on("window-all-closed", () => {
+    if (process.platform !== "darwin") {
+        app.quit();
+    }
+});

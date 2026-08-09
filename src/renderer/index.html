@@ -1,19 +1,90 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" dir="ltr">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
     <title>ThreeMarket POS</title>
+
+    <link rel="stylesheet" href="/css/reset.css">
+    <link rel="stylesheet" href="/css/variables.css">
+    <link rel="stylesheet" href="/css/themes.css">
+    <link rel="stylesheet" href="/css/auth.css">
 </head>
 
 <body>
 
-<div id="app">
-    <h1>🛒 ThreeMarket POS</h1>
-    <p>Retail Management System</p>
-</div>
+    <main id="app">
+        <section class="login-page">
 
-<script type="module" src="/js/main.js"></script>
+            <div class="login-card">
+
+                <div class="brand">
+                    <div class="brand-icon">🛒</div>
+
+                    <h1>ThreeMarket POS</h1>
+
+                    <p data-i18n="login.subtitle">
+                        Retail Management System
+                    </p>
+                </div>
+
+                <form id="loginForm">
+
+                    <div class="form-group">
+                        <label for="username" data-i18n="login.username">
+                            Username
+                        </label>
+
+                        <input
+                            type="text"
+                            id="username"
+                            name="username"
+                            autocomplete="username"
+                            required
+                        >
+                    </div>
+
+                    <div class="form-group">
+                        <label for="password" data-i18n="login.password">
+                            Password
+                        </label>
+
+                        <input
+                            type="password"
+                            id="password"
+                            name="password"
+                            autocomplete="current-password"
+                            required
+                        >
+                    </div>
+
+                    <button type="submit" id="loginButton" data-i18n="login.button">
+                        Login
+                    </button>
+
+                    <div id="loginMessage" class="login-message"></div>
+
+                </form>
+
+                <div class="login-footer">
+
+                    <button type="button" id="languageButton">
+                        العربية
+                    </button>
+
+                    <span>Version 1.0.0</span>
+
+                </div>
+
+            </div>
+
+        </section>
+    </main>
+
+    <script type="module" src="/js/main.js"></script>
 
 </body>
+
 </html>
