@@ -5,5 +5,11 @@ contextBridge.exposeInMainWorld("api", {
         ipcRenderer.invoke("auth:login", {
             username,
             password
-        })
+        }),
+
+    getSession: () =>
+        ipcRenderer.invoke("session:get"),
+
+    logout: () =>
+        ipcRenderer.invoke("session:logout")
 });

@@ -2,6 +2,7 @@ const { app, BrowserWindow, ipcMain } = require("electron");
 const path = require("path");
 
 const authService = require("../src/services/auth.service");
+const sessionService = require("../src/services/session.service");
 
 function createWindow() {
     const win = new BrowserWindow({
