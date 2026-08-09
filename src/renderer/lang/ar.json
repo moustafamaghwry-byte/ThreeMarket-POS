@@ -1,8 +1,29 @@
 {
-  "login": {
-    "subtitle": "نظام إدارة التجزئة",
-    "username": "اسم المستخدم",
-    "password": "كلمة المرور",
-    "button": "تسجيل الدخول"
-  }
+    "login": {
+        "subtitle": "نظام إدارة التجزئة",
+        "username": "اسم المستخدم",
+        "password": "كلمة المرور",
+        "button": "تسجيل الدخول"
+    },
+    "nav": {
+        "dashboard": "لوحة التحكم",
+        "sales": "المبيعات",
+        "products": "المنتجات",
+        "inventory": "المخزون",
+        "customers": "العملاء",
+        "suppliers": "الموردون",
+        "reports": "التقارير",
+        "settings": "الإعدادات",
+        "logout": "تسجيل الخروج"
+    },
+    "dashboard": {
+        "title": "لوحة التحكم",
+        "welcome": "مرحبًا بك في ThreeMarket POS",
+        "sales": "مبيعات اليوم",
+        "transactions": "المعاملات",
+        "products": "المنتجات",
+        "lowStock": "مخزون منخفض",
+        "ready": "جاهز لإدارة نشاطك التجاري؟",
+        "description": "يوفر ThreeMarket POS منصة موحدة لإدارة أنشطة التجزئة بمختلف أنواعها."
+    }
 }

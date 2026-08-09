@@ -1,4 +1,8 @@
-import { applyLanguage, toggleLanguage } from "./i18n.js";
+import {
+    loadTranslations,
+    toggleLanguage
+} from "./i18n.js";
+import { initializeNavigation } from "./navigation.js";
 
 async function initializeDashboard() {
     try {
@@ -26,7 +30,8 @@ async function initializeDashboard() {
         }
 
         // Apply current language
-        applyLanguage();
+        await loadTranslations();
+        initializeNavigation();
 
         // Language button
         const languageButton =

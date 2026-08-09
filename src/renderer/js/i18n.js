@@ -1,64 +1,94 @@
-const translations = {
-    en: {
-        login: {
-            subtitle: "Retail Management System",
-            username: "Username",
-            password: "Password",
-            button: "Login"
-        }
-    },
+let translations = {};
+let currentLanguage = localStorage.getItem("language") || "en";
 
-    ar: {
-        login: {
-            subtitle: "نظام إدارة التجزئة",
-            username: "اسم المستخدم",
-            password: "كلمة المرور",
-            button: "تسجيل الدخول"
+async function loadTranslations() {
+    try {
+        const response = await fetch(
+            `/lang/${currentLanguage}.json`
+        );
+
+        if (!response.ok) {
+            throw new Error(
+                `Failed to load ${currentLanguage}.json`
+            );
         }
+
+        translations = await response.json();
+
+        applyLanguage();
+
+    } catch (error) {
+        console.error(
+            "Translation loading error:",
+            error
+        );
     }
-};
-
-let currentLanguage = "en";
+}
 
 function getTranslation(key) {
     const keys = key.split(".");
-    let value = translations[currentLanguage];
+    let value = translations;
 
     for (const item of keys) {
         value = value?.[item];
     }
 
-    return value || key;
+    return value ?? key;
 }
 
 function applyLanguage() {
 
-    document.documentElement.lang = currentLanguage;
+    document.documentElement.lang =
+        currentLanguage;
+
     document.documentElement.dir =
-        currentLanguage === "ar" ? "rtl" : "ltr";
+        currentLanguage === "ar"
+            ? "rtl"
+            : "ltr";
 
-    document.querySelectorAll("[data-i18n]").forEach(element => {
-        const key = element.dataset.i18n;
-        element.textContent = getTranslation(key);
-    });
+    document
+        .querySelectorAll("[data-i18n]")
+        .forEach((element) => {
 
-    const languageButton = document.getElementById("languageButton");
+            const key =
+                element.dataset.i18n;
+
+            element.textContent =
+                getTranslation(key);
+        });
+
+    const languageButton =
+        document.getElementById(
+            "languageButton"
+        );
 
     if (languageButton) {
+
         languageButton.textContent =
-            currentLanguage === "en" ? "العربية" : "English";
+            currentLanguage === "en"
+                ? "العربية"
+                : "English";
     }
 }
 
-function toggleLanguage() {
+async function toggleLanguage() {
 
     currentLanguage =
-        currentLanguage === "en" ? "ar" : "en";
+        currentLanguage === "en"
+            ? "ar"
+            : "en";
 
-    applyLanguage();
+    localStorage.setItem(
+        "language",
+        currentLanguage
+    );
+
+    await loadTranslations();
 }
 
 export {
+    loadTranslations,
     applyLanguage,
-    toggleLanguage
+    toggleLanguage,
+    getTranslation
 };

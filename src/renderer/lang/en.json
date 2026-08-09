@@ -1,8 +1,29 @@
 {
-  "login": {
-    "subtitle": "Retail Management System",
-    "username": "Username",
-    "password": "Password",
-    "button": "Login"
-  }
+    "login": {
+        "subtitle": "Retail Management System",
+        "username": "Username",
+        "password": "Password",
+        "button": "Login"
+    },
+    "nav": {
+        "dashboard": "Dashboard",
+        "sales": "Sales",
+        "products": "Products",
+        "inventory": "Inventory",
+        "customers": "Customers",
+        "suppliers": "Suppliers",
+        "reports": "Reports",
+        "settings": "Settings",
+        "logout": "Logout"
+    },
+    "dashboard": {
+        "title": "Dashboard",
+        "welcome": "Welcome to ThreeMarket POS",
+        "sales": "Today's Sales",
+        "transactions": "Transactions",
+        "products": "Products",
+        "lowStock": "Low Stock",
+        "ready": "Ready to manage your business?",
+        "description": "ThreeMarket POS provides a unified retail management platform for different types of businesses."
+    }
 }
