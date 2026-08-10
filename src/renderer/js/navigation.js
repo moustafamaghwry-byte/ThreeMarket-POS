@@ -9,7 +9,9 @@ const pages = {
     settings: "/pages/settings.html"
 };
 
+
 function navigateTo(page) {
+
     const target = pages[page];
 
     if (!target) {
@@ -20,30 +22,61 @@ function navigateTo(page) {
     window.location.href = target;
 }
 
-function initializeNavigation() {
+
+function setActiveNavigation() {
+
+    const currentPath =
+        window.location.pathname;
 
     const navItems =
         document.querySelectorAll("[data-page]");
 
     navItems.forEach((item) => {
 
-        item.addEventListener("click", () => {
+        const page =
+            item.dataset.page;
 
-            const page =
-                item.dataset.page;
+        const target =
+            pages[page];
 
-            navigateTo(page);
-        });
+        item.classList.toggle(
+            "active",
+            currentPath === target
+        );
 
     });
 }
 
-document.addEventListener(
-    "DOMContentLoaded",
-    initializeNavigation
-);
+
+function initializeNavigation() {
+
+    const navItems =
+        document.querySelectorAll("[data-page]");
+
+
+    navItems.forEach((item) => {
+
+        item.addEventListener(
+            "click",
+            () => {
+
+                const page =
+                    item.dataset.page;
+
+                navigateTo(page);
+
+            }
+        );
+
+    });
+
+
+    setActiveNavigation();
+}
+
 
 export {
     navigateTo,
-    initializeNavigation
+    initializeNavigation,
+    setActiveNavigation
 };

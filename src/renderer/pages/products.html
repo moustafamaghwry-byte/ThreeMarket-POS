@@ -1,0 +1,341 @@
+<!-- ============================================================
+     ThreeMarket POS - Products Page
+     Product management page with search, table, empty state,
+     shared application components, and product modal.
+     ============================================================ -->
+
+<!DOCTYPE html>
+
+<html lang="en" dir="ltr">
+
+<head>
+
+    <!-- ========================================================
+         Document Metadata
+         ======================================================== -->
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>ThreeMarket POS - Products</title>
+
+
+    <!-- ========================================================
+         Global Styles
+         ======================================================== -->
+
+    <link
+        rel="stylesheet"
+        href="/css/reset.css"
+    >
+
+    <link
+        rel="stylesheet"
+        href="/css/variables.css"
+    >
+
+    <link
+        rel="stylesheet"
+        href="/css/themes.css"
+    >
+
+    <link
+        rel="stylesheet"
+        href="/css/dashboard.css"
+    >
+
+    <link
+        rel="stylesheet"
+        href="/css/products.css"
+    >
+
+</head>
+
+
+<body>
+
+    <!-- ========================================================
+         Application Layout
+         ======================================================== -->
+
+    <div class="app-layout">
+
+
+        <!-- ====================================================
+             Sidebar Container
+             Sidebar component is loaded dynamically by
+             component-loader.js.
+             ==================================================== -->
+
+        <div id="sidebar-container"></div>
+
+
+        <!-- ====================================================
+             Main Content
+             ==================================================== -->
+
+        <main class="main-content">
+
+
+            <!-- =================================================
+                 Topbar Container
+                 Topbar component is loaded dynamically.
+                 ================================================= -->
+
+            <div id="topbar-container"></div>
+
+
+            <!-- =================================================
+                 Products Content
+                 ================================================= -->
+
+            <section class="page-content">
+
+
+                <!-- =============================================
+                     Page Header
+                     ============================================= -->
+
+                <div class="page-header">
+
+                    <div>
+
+                        <h1
+                            data-i18n="products.title"
+                        >
+                            Products
+                        </h1>
+
+
+                        <p
+                            data-i18n="products.subtitle"
+                        >
+                            Manage your products
+                        </p>
+
+                    </div>
+
+
+                    <!-- =========================================
+                         Add Product Button
+                         ========================================= -->
+
+                    <button
+                        type="button"
+                        id="addProductButton"
+                        class="primary-button"
+                    >
+
+                        <span aria-hidden="true">
+                            +
+                        </span>
+
+                        <span
+                            data-i18n="products.add"
+                        >
+                            Add Product
+                        </span>
+
+                    </button>
+
+                </div>
+
+
+                <!-- =============================================
+                     Products Toolbar
+                     ============================================= -->
+
+                <div class="products-toolbar">
+
+
+                    <!-- Search Products -->
+
+                    <input
+                        type="text"
+                        id="productSearch"
+                        class="search-input"
+                        placeholder="Search products..."
+                        data-i18n-placeholder="products.search"
+                        autocomplete="off"
+                    >
+
+                </div>
+
+
+                <!-- =============================================
+                     Products Table Container
+                     ============================================= -->
+
+                <div
+                    id="productsTableContainer"
+                    class="table-container"
+                >
+
+                    <table class="data-table">
+
+
+                        <!-- =====================================
+                             Table Header
+                             ===================================== -->
+
+                        <thead>
+
+                            <tr>
+
+                                <th
+                                    data-i18n="products.sku"
+                                >
+                                    SKU
+                                </th>
+
+
+                                <th
+                                    data-i18n="products.name"
+                                >
+                                    Product
+                                </th>
+
+
+                                <th
+                                    data-i18n="products.category"
+                                >
+                                    Category
+                                </th>
+
+
+                                <th
+                                    data-i18n="products.price"
+                                >
+                                    Price
+                                </th>
+
+
+                                <th
+                                    data-i18n="products.stock"
+                                >
+                                    Stock
+                                </th>
+
+
+                                <th
+                                    data-i18n="products.status"
+                                >
+                                    Status
+                                </th>
+
+
+                                <th
+                                    data-i18n="products.actions"
+                                >
+                                    Actions
+                                </th>
+
+                            </tr>
+
+                        </thead>
+
+
+                        <!-- =====================================
+                             Products Table Body
+                             Products are injected by products.js.
+                             ===================================== -->
+
+                        <tbody
+                            id="productsTableBody"
+                        >
+
+                            <!-- Products will be loaded here -->
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+
+                <!-- =============================================
+                     Empty State
+                     Displayed when there are no products.
+                     ============================================= -->
+
+                <div
+                    id="productsEmptyState"
+                    class="empty-state"
+                >
+
+                    <div
+                        class="empty-icon"
+                        aria-hidden="true"
+                    >
+                        📦
+                    </div>
+
+
+                    <h2
+                        data-i18n="products.empty"
+                    >
+                        No products found
+                    </h2>
+
+
+                    <p
+                        data-i18n="products.emptyDescription"
+                    >
+                        Add your first product to get started.
+                    </p>
+
+
+                    <!-- Optional Empty State Add Button -->
+
+                    <button
+                        type="button"
+                        id="emptyAddProductButton"
+                        class="primary-button"
+                    >
+
+                        <span aria-hidden="true">
+                            +
+                        </span>
+
+                        <span
+                            data-i18n="products.add"
+                        >
+                            Add Product
+                        </span>
+
+                    </button>
+
+                </div>
+
+            </section>
+
+        </main>
+
+
+        <!-- ====================================================
+             Modal Container
+             Product modal is loaded dynamically by
+             component-loader.js.
+             ==================================================== -->
+
+        <div id="modal-container"></div>
+
+    </div>
+
+
+    <!-- ========================================================
+         Products Page JavaScript
+         ======================================================== -->
+
+    <script
+        type="module"
+        src="/js/products.js"
+    ></script>
+
+</body>
+
+</html>
