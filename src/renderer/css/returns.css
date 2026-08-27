@@ -1,0 +1,2130 @@
+/* ============================================================
+   ThreeMarket POS - Returns Theme
+   Complete styling for:
+   - Returns page
+   - Invoice search
+   - Sale information
+   - Return items
+   - Return summary
+   - Confirmation modal
+   - Receipt preview modal
+   - 80mm thermal receipt printing
+   - RTL support
+   - Responsive layouts
+   ============================================================ */
+
+
+/* ============================================================
+   Page
+   ============================================================ */
+
+.returns-page {
+    width: 100%;
+    max-width: 1500px;
+    min-height: 100vh;
+    margin: 0 auto;
+    padding: 32px;
+
+    background:
+        var(
+            --bg-primary,
+            var(
+                --background,
+                #f6f7f9
+            )
+        );
+
+    color:
+        var(
+            --text-primary,
+            #1f2937
+        );
+}
+
+
+/* ============================================================
+   Header
+   ============================================================ */
+
+.returns-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 24px;
+    margin-bottom: 28px;
+}
+
+.returns-header-content {
+    min-width: 0;
+}
+
+.page-eyebrow {
+    margin-bottom: 7px;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+
+    color:
+        var(
+            --text-secondary,
+            #8a8f98
+        );
+}
+
+.returns-header h1 {
+    margin: 0;
+    font-size: 30px;
+    line-height: 1.2;
+    font-weight: 700;
+
+    color:
+        var(
+            --text-primary,
+            #171a1f
+        );
+}
+
+.returns-header p {
+    margin: 8px 0 0;
+    font-size: 14px;
+    line-height: 1.5;
+
+    color:
+        var(
+            --text-secondary,
+            #7a808a
+        );
+}
+
+
+/* ============================================================
+   Header Status
+   ============================================================ */
+
+.returns-header-status {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+
+    flex-shrink: 0;
+    min-height: 34px;
+
+    padding: 0 12px;
+
+    border: 1px solid
+        var(
+            --border-color,
+            #e5e7eb
+        );
+
+    border-radius: 999px;
+
+    background:
+        var(
+            --card-background,
+            #ffffff
+        );
+
+    color:
+        var(
+            --text-secondary,
+            #6b7280
+        );
+
+    font-size: 12px;
+    font-weight: 600;
+
+    box-shadow:
+        var(
+            --shadow-sm,
+            0 1px 4px rgba(0, 0, 0, 0.03)
+        );
+}
+
+.status-dot {
+    width: 7px;
+    height: 7px;
+    flex-shrink: 0;
+
+    border-radius: 50%;
+
+    background:
+        var(
+            --success-color,
+            #22c55e
+        );
+}
+
+
+/* ============================================================
+   Global Card
+   ============================================================ */
+
+.tm-card {
+    width: 100%;
+    margin-bottom: 18px;
+    padding: 22px;
+
+    border: 1px solid
+        var(
+            --border-color,
+            #e7e9ed
+        );
+
+    border-radius:
+        var(
+            --radius-lg,
+            12px
+        );
+
+    background:
+        var(
+            --card-background,
+            #ffffff
+        );
+
+    box-shadow:
+        var(
+            --shadow-sm,
+            0 2px 8px rgba(0, 0, 0, 0.04)
+        );
+}
+
+
+/* ============================================================
+   Card Header
+   ============================================================ */
+
+.card-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+
+    gap: 20px;
+    margin-bottom: 20px;
+}
+
+.card-header h2 {
+    margin: 0;
+
+    font-size: 17px;
+    line-height: 1.35;
+    font-weight: 700;
+
+    color:
+        var(
+            --text-primary,
+            #1f2937
+        );
+}
+
+.card-header p {
+    margin: 5px 0 0;
+
+    font-size: 13px;
+    line-height: 1.5;
+
+    color:
+        var(
+            --text-secondary,
+            #7b818b
+        );
+}
+
+
+/* ============================================================
+   Form Fields
+   ============================================================ */
+
+.field {
+    flex: 1;
+    min-width: 0;
+}
+
+.field label {
+    display: block;
+
+    margin-bottom: 7px;
+
+    font-size: 13px;
+    font-weight: 600;
+
+    color:
+        var(
+            --text-primary,
+            #343a40
+        );
+}
+
+.field input,
+.field textarea {
+    width: 100%;
+
+    border: 1px solid
+        var(
+            --input-border,
+            var(
+                --border-color,
+                #dfe3e8
+            )
+        );
+
+    border-radius:
+        var(
+            --radius-md,
+            8px
+        );
+
+    background:
+        var(
+            --input-background,
+            var(
+                --card-background,
+                #ffffff
+            )
+        );
+
+    color:
+        var(
+            --text-primary,
+            #222222
+        );
+
+    font-family: inherit;
+    font-size: 14px;
+
+    outline: none;
+
+    transition:
+        border-color 0.15s ease,
+        box-shadow 0.15s ease,
+        background-color 0.15s ease;
+}
+
+.field input {
+    height: 44px;
+    padding: 0 13px;
+}
+
+.field textarea {
+    min-height: 90px;
+    padding: 12px 13px;
+    resize: vertical;
+}
+
+.field input::placeholder,
+.field textarea::placeholder {
+    color:
+        var(
+            --text-muted,
+            #a3a8b0
+        );
+}
+
+.field input:focus,
+.field textarea:focus {
+    border-color:
+        var(
+            --primary-color,
+            #2563eb
+        );
+
+    box-shadow:
+        0 0 0 3px
+        rgba(37, 99, 235, 0.10);
+}
+
+
+/* ============================================================
+   Invoice Search
+   ============================================================ */
+
+.invoice-search {
+    display: flex;
+    align-items: flex-end;
+    gap: 14px;
+}
+
+.search-button {
+    min-width: 150px;
+    height: 44px;
+    flex-shrink: 0;
+}
+
+
+/* ============================================================
+   Buttons
+   ============================================================ */
+
+.tm-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    min-height: 40px;
+    padding: 0 15px;
+
+    border: 1px solid transparent;
+
+    border-radius:
+        var(
+            --radius-md,
+            8px
+        );
+
+    font-family: inherit;
+    font-size: 13px;
+    font-weight: 600;
+
+    white-space: nowrap;
+    cursor: pointer;
+
+    transition:
+        background-color 0.15s ease,
+        border-color 0.15s ease,
+        color 0.15s ease,
+        opacity 0.15s ease,
+        transform 0.1s ease;
+}
+
+.tm-btn:hover {
+    opacity: 0.92;
+}
+
+.tm-btn:active {
+    transform: translateY(1px);
+}
+
+.tm-btn:disabled {
+    opacity: 0.45;
+    cursor: not-allowed;
+    transform: none;
+}
+
+
+/* ============================================================
+   Primary Button
+   ============================================================ */
+
+.tm-btn-primary {
+    background:
+        var(
+            --primary-color,
+            #2563eb
+        );
+
+    border-color:
+        var(
+            --primary-color,
+            #2563eb
+        );
+
+    color:
+        var(
+            --primary-button-text,
+            #ffffff
+        );
+}
+
+
+/* ============================================================
+   Secondary Button
+   ============================================================ */
+
+.tm-btn-secondary {
+    background:
+        var(
+            --button-secondary-bg,
+            var(
+                --bg-secondary,
+                #f1f3f5
+            )
+        );
+
+    border-color:
+        var(
+            --border-color,
+            #e1e5e9
+        );
+
+    color:
+        var(
+            --text-primary,
+            #30343b
+        );
+}
+
+
+/* ============================================================
+   Light Button
+   ============================================================ */
+
+.tm-btn-light {
+    background:
+        var(
+            --button-light-bg,
+            var(
+                --card-background,
+                #ffffff
+            )
+        );
+
+    border-color:
+        var(
+            --border-color,
+            #e1e5e9
+        );
+
+    color:
+        var(
+            --text-secondary,
+            #656b74
+        );
+}
+
+
+/* ============================================================
+   Danger Button
+   ============================================================ */
+
+.tm-btn-danger {
+    background:
+        var(
+            --danger-color,
+            #dc3545
+        );
+
+    border-color:
+        var(
+            --danger-color,
+            #dc3545
+        );
+
+    color: #ffffff;
+}
+
+
+/* ============================================================
+   Messages
+   ============================================================ */
+
+.returns-message {
+    width: 100%;
+    margin-bottom: 18px;
+    padding: 13px 16px;
+
+    border-radius: 9px;
+
+    font-size: 13px;
+    line-height: 1.5;
+    font-weight: 600;
+}
+
+.returns-message.success {
+    border: 1px solid
+        var(
+            --success-border,
+            #c9ead5
+        );
+
+    background:
+        var(
+            --success-background,
+            #effaf3
+        );
+
+    color:
+        var(
+            --success-text,
+            #187a3d
+        );
+}
+
+.returns-message.error {
+    border: 1px solid
+        var(
+            --danger-border,
+            #f2caca
+        );
+
+    background:
+        var(
+            --danger-background,
+            #fff1f1
+        );
+
+    color:
+        var(
+            --danger-text,
+            #b42318
+        );
+}
+
+.returns-message.info {
+    border: 1px solid
+        var(
+            --info-border,
+            #cbdcf7
+        );
+
+    background:
+        var(
+            --info-background,
+            #f1f6ff
+        );
+
+    color:
+        var(
+            --info-text,
+            #245ea8
+        );
+}
+
+
+/* ============================================================
+   Sale Information
+   ============================================================ */
+
+.sale-card {
+    padding: 0;
+    overflow: hidden;
+}
+
+.sale-main-info {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+.sale-info-block {
+    min-width: 0;
+    padding: 19px 22px;
+
+    border-right: 1px solid
+        var(
+            --border-color,
+            #e7e9ed
+        );
+}
+
+.sale-info-block:last-child {
+    border-right: 0;
+}
+
+.info-label {
+    display: block;
+    margin-bottom: 6px;
+
+    font-size: 11px;
+    font-weight: 600;
+
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+
+    color:
+        var(
+            --text-secondary,
+            #8a9099
+        );
+}
+
+.sale-info-block strong {
+    display: block;
+
+    overflow: hidden;
+
+    text-overflow: ellipsis;
+    white-space: nowrap;
+
+    font-size: 14px;
+
+    color:
+        var(
+            --text-primary,
+            #252930
+        );
+}
+
+
+/* ============================================================
+   Products
+   ============================================================ */
+
+.products-card {
+    overflow: hidden;
+}
+
+.products-header {
+    align-items: center;
+}
+
+.products-actions {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+
+    flex-wrap: wrap;
+
+    gap: 8px;
+}
+
+
+/* ============================================================
+   VAT Badge
+   ============================================================ */
+
+.vat-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    min-height: 32px;
+    padding: 0 10px;
+
+    border: 1px solid
+        var(
+            --border-color,
+            #e1e5e9
+        );
+
+    border-radius: 6px;
+
+    background:
+        var(
+            --button-secondary-bg,
+            #f4f5f6
+        );
+
+    color:
+        var(
+            --text-secondary,
+            #727780
+        );
+
+    font-size: 11px;
+    font-weight: 700;
+}
+
+
+/* ============================================================
+   Return Items
+   ============================================================ */
+
+.return-items {
+    width: 100%;
+}
+
+.return-item {
+    display: grid;
+
+    grid-template-columns:
+        minmax(220px, 2fr)
+        110px
+        110px
+        120px
+        120px;
+
+    align-items: center;
+
+    gap: 15px;
+
+    padding: 15px 16px;
+    margin-bottom: 9px;
+
+    border: 1px solid
+        var(
+            --border-color,
+            #e7e9ed
+        );
+
+    border-radius: 9px;
+
+    background:
+        var(
+            --card-background,
+            #ffffff
+        );
+
+    transition:
+        border-color 0.15s ease,
+        box-shadow 0.15s ease,
+        background-color 0.15s ease;
+}
+
+.return-item:last-child {
+    margin-bottom: 0;
+}
+
+.return-item:hover {
+    border-color:
+        var(
+            --border-hover-color,
+            #d6dbe1
+        );
+
+    box-shadow:
+        var(
+            --shadow-sm,
+            0 2px 8px rgba(0, 0, 0, 0.04)
+        );
+}
+
+
+/* ============================================================
+   Product Information
+   ============================================================ */
+
+.item-info {
+    min-width: 0;
+}
+
+.item-info strong {
+    display: block;
+
+    overflow: hidden;
+
+    margin-bottom: 4px;
+
+    font-size: 14px;
+    line-height: 1.4;
+
+    text-overflow: ellipsis;
+    white-space: nowrap;
+
+    color:
+        var(
+            --text-primary,
+            #252930
+        );
+}
+
+.item-info span {
+    display: block;
+
+    overflow: hidden;
+
+    font-size: 11px;
+
+    text-overflow: ellipsis;
+    white-space: nowrap;
+
+    color:
+        var(
+            --text-secondary,
+            #8a9099
+        );
+}
+
+.item-price,
+.item-available {
+    font-size: 13px;
+    font-weight: 600;
+
+    color:
+        var(
+            --text-primary,
+            #333840
+        );
+}
+
+
+/* ============================================================
+   Quantity
+   ============================================================ */
+
+.item-quantity {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.item-quantity label {
+    font-size: 10px;
+    font-weight: 600;
+
+    color:
+        var(
+            --text-secondary,
+            #888f99
+        );
+}
+
+.item-quantity input {
+    width: 100%;
+    height: 36px;
+
+    padding: 0 9px;
+
+    border: 1px solid
+        var(
+            --input-border,
+            #dfe3e8
+        );
+
+    border-radius: 7px;
+
+    background:
+        var(
+            --input-background,
+            #ffffff
+        );
+
+    color:
+        var(
+            --text-primary,
+            #222222
+        );
+
+    text-align: center;
+
+    font-family: inherit;
+    font-size: 13px;
+    font-weight: 600;
+
+    outline: none;
+
+    transition:
+        border-color 0.15s ease,
+        box-shadow 0.15s ease;
+}
+
+.item-quantity input:focus {
+    border-color:
+        var(
+            --primary-color,
+            #2563eb
+        );
+
+    box-shadow:
+        0 0 0 3px
+        rgba(37, 99, 235, 0.08);
+}
+
+
+/* ============================================================
+   Item Total
+   ============================================================ */
+
+.item-total {
+    text-align: right;
+
+    font-size: 14px;
+    font-weight: 700;
+
+    color:
+        var(
+            --text-primary,
+            #20242a
+        );
+}
+
+
+/* ============================================================
+   Empty State
+   ============================================================ */
+
+.empty-state {
+    min-height: 210px;
+
+    display: flex;
+    flex-direction: column;
+
+    align-items: center;
+    justify-content: center;
+
+    gap: 7px;
+
+    padding: 25px;
+
+    border: 1px dashed
+        var(
+            --border-color,
+            #dfe3e8
+        );
+
+    border-radius: 9px;
+
+    color:
+        var(
+            --text-secondary,
+            #8a9099
+        );
+
+    text-align: center;
+}
+
+.empty-icon {
+    width: 42px;
+    height: 42px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    margin-bottom: 5px;
+
+    border-radius: 50%;
+
+    background:
+        var(
+            --button-secondary-bg,
+            #f2f4f6
+        );
+
+    color:
+        var(
+            --text-secondary,
+            #727780
+        );
+
+    font-size: 20px;
+}
+
+.empty-state strong {
+    font-size: 14px;
+
+    color:
+        var(
+            --text-primary,
+            #454a52
+        );
+}
+
+.empty-state span {
+    font-size: 12px;
+    line-height: 1.5;
+}
+
+
+/* ============================================================
+   Summary
+   ============================================================ */
+
+.summary-card {
+    max-width: 520px;
+    margin-left: auto;
+}
+
+.summary-header {
+    margin-bottom: 12px;
+}
+
+.summary-header h2 {
+    margin: 0;
+
+    font-size: 17px;
+
+    color:
+        var(
+            --text-primary,
+            #252930
+        );
+}
+
+.summary-header p {
+    margin: 5px 0 0;
+
+    font-size: 12px;
+
+    color:
+        var(
+            --text-secondary,
+            #888f99
+        );
+}
+
+.summary-line {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    gap: 20px;
+
+    padding: 9px 0;
+
+    font-size: 13px;
+
+    color:
+        var(
+            --text-secondary,
+            #707780
+        );
+}
+
+.summary-line strong {
+    color:
+        var(
+            --text-primary,
+            #292d33
+        );
+}
+
+.summary-total {
+    margin-top: 8px;
+    padding-top: 15px;
+
+    border-top: 1px solid
+        var(
+            --border-color,
+            #e7e9ed
+        );
+
+    font-size: 15px;
+    font-weight: 700;
+}
+
+.summary-total strong {
+    font-size: 20px;
+
+    color:
+        var(
+            --primary-color,
+            #2563eb
+        );
+}
+
+
+/* ============================================================
+   Reason
+   ============================================================ */
+
+.reason-card {
+    margin-bottom: 20px;
+}
+
+
+/* ============================================================
+   Footer
+   ============================================================ */
+
+.returns-footer {
+    display: flex;
+    justify-content: flex-end;
+
+    padding-bottom: 30px;
+}
+
+.process-button {
+    min-width: 190px;
+    min-height: 44px;
+
+    font-size: 14px;
+}
+
+
+/* ============================================================
+   Confirmation Modal
+   ============================================================ */
+
+.tm-modal-overlay {
+    position: fixed;
+    inset: 0;
+
+    background: rgba(0, 0, 0, 0.55);
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    padding: 20px;
+
+    z-index: 1000;
+}
+
+.tm-modal-overlay[hidden] {
+    display: none !important;
+}
+
+.tm-modal {
+    background:
+        var(
+            --color-surface,
+            var(
+                --card-background,
+                #ffffff
+            )
+        );
+
+    border-radius: 12px;
+
+    width: min(480px, 90vw);
+    max-height: 85vh;
+
+    display: flex;
+    flex-direction: column;
+
+    overflow: hidden;
+
+    box-shadow:
+        0 20px 50px
+        rgba(0, 0, 0, 0.3);
+
+    animation: tmModalIn 0.18s ease-out;
+}
+
+@keyframes tmModalIn {
+    from {
+        opacity: 0;
+        transform: translateY(14px) scale(0.98);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+
+/* ============================================================
+   Modal Header
+   ============================================================ */
+
+.tm-modal-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    padding: 16px 20px;
+
+    border-bottom: 1px solid
+        var(
+            --color-border,
+            #e5e7eb
+        );
+}
+
+.tm-modal-header h3 {
+    margin: 0;
+    font-size: 17px;
+}
+
+.tm-modal-close {
+    background: none;
+    border: none;
+
+    font-size: 22px;
+    line-height: 1;
+
+    cursor: pointer;
+
+    color:
+        var(
+            --color-text-muted,
+            #6b7280
+        );
+
+    padding: 4px 8px;
+
+    border-radius: 6px;
+}
+
+.tm-modal-close:hover {
+    background:
+        var(
+            --color-bg-hover,
+            #f3f4f6
+        );
+
+    color:
+        var(
+            --color-danger,
+            #dc2626
+        );
+}
+
+
+/* ============================================================
+   Modal Body
+   ============================================================ */
+
+.tm-modal-body {
+    padding: 16px 20px;
+
+    overflow-y: auto;
+}
+
+.tm-modal-note {
+    margin: 0 0 12px;
+
+    font-size: 13px;
+
+    color:
+        var(
+            --color-text-muted,
+            #6b7280
+        );
+}
+
+
+/* ============================================================
+   Confirmation Invoice
+   ============================================================ */
+
+.confirm-invoice-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    padding: 10px 12px;
+
+    background:
+        var(
+            --color-bg-soft,
+            #f9fafb
+        );
+
+    border-radius: 8px;
+
+    margin-bottom: 12px;
+
+    font-size: 14px;
+}
+
+
+/* ============================================================
+   Confirmation Items
+   ============================================================ */
+
+.confirm-items {
+    display: flex;
+    flex-direction: column;
+
+    gap: 8px;
+
+    margin-bottom: 14px;
+}
+
+.confirm-item-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    gap: 10px;
+
+    padding: 8px 12px;
+
+    border: 1px solid
+        var(
+            --color-border,
+            #e5e7eb
+        );
+
+    border-radius: 8px;
+
+    font-size: 14px;
+}
+
+
+/* ============================================================
+   Confirmation Totals
+   ============================================================ */
+
+.confirm-totals {
+    border-top: 2px solid
+        var(
+            --color-border,
+            #e5e7eb
+        );
+
+    padding-top: 12px;
+
+    display: flex;
+    flex-direction: column;
+
+    gap: 6px;
+
+    font-size: 14px;
+}
+
+.confirm-totals .totals-row {
+    display: flex;
+    justify-content: space-between;
+}
+
+.confirm-totals .totals-row.grand {
+    font-size: 16px;
+    font-weight: 700;
+
+    color:
+        var(
+            --color-danger,
+            #dc2626
+        );
+}
+
+
+/* ============================================================
+   Modal Footer
+   ============================================================ */
+
+.tm-modal-footer {
+    display: flex;
+    justify-content: flex-end;
+
+    gap: 10px;
+
+    padding: 14px 20px;
+
+    border-top: 1px solid
+        var(
+            --color-border,
+            #e5e7eb
+        );
+}
+
+
+/* ============================================================
+   Modal Buttons
+   ============================================================ */
+
+.btn-danger {
+    background:
+        var(
+            --color-danger,
+            #dc2626
+        );
+
+    color: #ffffff;
+
+    border: none;
+
+    padding: 10px 18px;
+
+    border-radius: 8px;
+
+    font-weight: 600;
+
+    cursor: pointer;
+
+    transition:
+        background-color 0.15s ease,
+        opacity 0.15s ease;
+}
+
+.btn-danger:hover {
+    background:
+        var(
+            --color-danger-dark,
+            #b91c1c
+        );
+}
+
+.btn-danger:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.btn-secondary {
+    background: transparent;
+
+    color:
+        var(
+            --color-text,
+            #111827
+        );
+
+    border: 1px solid
+        var(
+            --color-border,
+            #d1d5db
+        );
+
+    padding: 10px 18px;
+
+    border-radius: 8px;
+
+    font-weight: 600;
+
+    cursor: pointer;
+
+    transition:
+        background-color 0.15s ease;
+}
+
+.btn-secondary:hover {
+    background:
+        var(
+            --color-bg-hover,
+            #f3f4f6
+        );
+}
+
+
+/* ============================================================
+   Return Receipt Preview Modal
+   ============================================================ */
+
+.receipt-preview-modal {
+    width: min(560px, 94vw);
+    max-height: 92vh;
+}
+
+.receipt-preview-body {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+
+    background:
+        var(
+            --color-bg-soft,
+            #f3f4f6
+        );
+
+    padding: 24px;
+
+    overflow-y: auto;
+}
+
+
+/* ============================================================
+   Receipt Template - Screen Preview
+   ============================================================ */
+
+.receipt-template {
+    display: block;
+
+    width: 300px;
+
+    flex-shrink: 0;
+
+    padding: 16px;
+
+    background: #ffffff;
+    color: #000000;
+
+    font-family:
+        "Courier New",
+        Courier,
+        monospace;
+
+    font-size: 12px;
+
+    line-height: 1.35;
+
+    box-shadow:
+        0 2px 10px
+        rgba(0, 0, 0, 0.15);
+}
+
+
+/* ============================================================
+   Receipt Header
+   ============================================================ */
+
+.receipt-header {
+    text-align: center;
+}
+
+.receipt-header h2 {
+    margin: 0;
+
+    font-size: 18px;
+    line-height: 1.2;
+}
+
+.receipt-header p {
+    margin: 2px 0 8px;
+
+    font-weight: bold;
+
+    letter-spacing: 1px;
+}
+
+
+/* ============================================================
+   Receipt Metadata
+   ============================================================ */
+
+.receipt-meta {
+    width: 100%;
+}
+
+.receipt-meta div {
+    display: flex;
+    justify-content: space-between;
+
+    gap: 10px;
+
+    margin-bottom: 2px;
+}
+
+.receipt-meta div span:last-child,
+.receipt-meta div strong {
+    text-align: right;
+}
+
+
+/* ============================================================
+   Receipt Divider
+   ============================================================ */
+
+.receipt-divider {
+    border-top: 1px dashed #000000;
+
+    margin: 6px 0;
+}
+
+
+/* ============================================================
+   Receipt Items
+   ============================================================ */
+
+.receipt-items {
+    width: 100%;
+
+    border-collapse: collapse;
+
+    table-layout: fixed;
+}
+
+.receipt-items th,
+.receipt-items td {
+    padding: 2px 0;
+
+    text-align: left;
+
+    vertical-align: top;
+
+    word-break: break-word;
+}
+
+.receipt-items th:first-child,
+.receipt-items td:first-child {
+    width: 55%;
+}
+
+.receipt-items th:nth-child(2),
+.receipt-items td:nth-child(2) {
+    width: 15%;
+
+    text-align: center;
+}
+
+.receipt-items th:last-child,
+.receipt-items td:last-child {
+    width: 30%;
+
+    text-align: right;
+}
+
+
+/* ============================================================
+   Receipt Totals
+   ============================================================ */
+
+.receipt-totals {
+    width: 100%;
+}
+
+.receipt-totals div {
+    display: flex;
+    justify-content: space-between;
+
+    gap: 10px;
+
+    margin-bottom: 2px;
+}
+
+.receipt-totals .grand {
+    font-weight: bold;
+
+    font-size: 14px;
+
+    border-top: 1px solid #000000;
+
+    padding-top: 4px;
+
+    margin-top: 4px;
+}
+
+
+/* ============================================================
+   Receipt Reason
+   ============================================================ */
+
+.receipt-reason {
+    margin-top: 6px;
+
+    font-size: 11px;
+
+    word-break: break-word;
+}
+
+.receipt-reason span:last-child {
+    overflow-wrap: anywhere;
+}
+
+
+/* ============================================================
+   Receipt Footer
+   ============================================================ */
+
+.receipt-footer {
+    text-align: center;
+
+    margin-top: 10px;
+
+    padding-top: 5px;
+}
+
+.receipt-footer p {
+    margin: 2px 0;
+}
+
+
+/* ============================================================
+   Receipt Preview Footer
+   ============================================================ */
+
+.receipt-preview-modal .tm-modal-footer {
+    background:
+        var(
+            --card-background,
+            #ffffff
+        );
+}
+
+.receipt-preview-modal #receiptPrintBtn {
+    min-width: 150px;
+}
+
+
+/* ============================================================
+   RTL
+   ============================================================ */
+
+html[dir="rtl"] .sale-info-block {
+    border-right: 0;
+
+    border-left: 1px solid
+        var(
+            --border-color,
+            #e7e9ed
+        );
+}
+
+html[dir="rtl"] .sale-info-block:last-child {
+    border-left: 0;
+}
+
+html[dir="rtl"] .item-total {
+    text-align: left;
+}
+
+html[dir="rtl"] .confirm-item-row,
+html[dir="rtl"] .confirm-invoice-row {
+    direction: rtl;
+}
+
+html[dir="rtl"] .receipt-template {
+    direction: rtl;
+}
+
+html[dir="rtl"] .receipt-items th,
+html[dir="rtl"] .receipt-items td {
+    text-align: right;
+}
+
+html[dir="rtl"] .receipt-items th:nth-child(2),
+html[dir="rtl"] .receipt-items td:nth-child(2) {
+    text-align: center;
+}
+
+html[dir="rtl"] .receipt-items th:last-child,
+html[dir="rtl"] .receipt-items td:last-child {
+    text-align: left;
+}
+
+html[dir="rtl"] .receipt-meta div,
+html[dir="rtl"] .receipt-totals div {
+    direction: rtl;
+}
+
+
+/* ============================================================
+   Responsive - Tablet
+   ============================================================ */
+
+@media (max-width: 1100px) {
+
+    .returns-page {
+        padding: 24px;
+    }
+
+    .return-item {
+        grid-template-columns:
+            minmax(180px, 2fr)
+            90px
+            100px
+            110px
+            100px;
+    }
+}
+
+
+/* ============================================================
+   Responsive - Small Tablet
+   ============================================================ */
+
+@media (max-width: 850px) {
+
+    .returns-header {
+        flex-direction: column;
+    }
+
+    .returns-header-status {
+        align-self: flex-start;
+    }
+
+    .invoice-search {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .search-button {
+        width: 100%;
+    }
+
+    .sale-main-info {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .sale-info-block:nth-child(2) {
+        border-right: 0;
+    }
+
+    .sale-info-block:nth-child(3),
+    .sale-info-block:nth-child(4) {
+        border-top: 1px solid
+            var(
+                --border-color,
+                #e7e9ed
+            );
+    }
+
+    .products-header {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .products-actions {
+        width: 100%;
+        justify-content: flex-start;
+    }
+
+    .return-item {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .item-total {
+        text-align: left;
+    }
+
+    html[dir="rtl"] .item-total {
+        text-align: right;
+    }
+
+    .summary-card {
+        max-width: none;
+    }
+
+    .receipt-preview-modal {
+        width: min(520px, 94vw);
+    }
+}
+
+
+/* ============================================================
+   Responsive - Mobile
+   ============================================================ */
+
+@media (max-width: 560px) {
+
+    .returns-page {
+        padding: 16px;
+    }
+
+    .tm-card {
+        padding: 16px;
+    }
+
+    .returns-header h1 {
+        font-size: 26px;
+    }
+
+    .sale-main-info {
+        grid-template-columns: 1fr;
+    }
+
+    .sale-info-block {
+        border-right: 0 !important;
+        border-left: 0 !important;
+
+        border-bottom: 1px solid
+            var(
+                --border-color,
+                #e7e9ed
+            );
+    }
+
+    .sale-info-block:last-child {
+        border-bottom: 0;
+    }
+
+    .return-item {
+        grid-template-columns: 1fr;
+    }
+
+    .products-actions {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .products-actions .tm-btn,
+    .products-actions .vat-badge {
+        width: 100%;
+        justify-content: center;
+    }
+
+    .returns-footer {
+        justify-content: stretch;
+    }
+
+    .process-button {
+        width: 100%;
+    }
+
+
+    /* Receipt Modal */
+
+    .receipt-preview-body {
+        padding: 16px 8px;
+    }
+
+    .receipt-preview-modal {
+        width: 96vw;
+        max-height: 94vh;
+    }
+
+    .receipt-template {
+        width: 280px;
+        padding: 12px;
+
+        font-size: 11px;
+    }
+
+    .receipt-header h2 {
+        font-size: 17px;
+    }
+
+    .receipt-totals .grand {
+        font-size: 13px;
+    }
+
+    .receipt-preview-modal .tm-modal-footer {
+        flex-direction: column-reverse;
+    }
+
+    .receipt-preview-modal .tm-modal-footer button {
+        width: 100%;
+    }
+}
+
+
+/* ============================================================
+   Print - 80mm Thermal Receipt
+   ============================================================ */
+
+@media print {
+
+    @page {
+        size: 80mm auto;
+        margin: 0;
+    }
+
+    html,
+    body {
+        width: 80mm;
+        margin: 0;
+        padding: 0;
+
+        background: #ffffff !important;
+    }
+
+    body * {
+        visibility: hidden !important;
+    }
+
+    #returnReceipt,
+    #returnReceipt * {
+        visibility: visible !important;
+    }
+
+    #returnReceipt {
+        display: block !important;
+
+        position: absolute;
+
+        top: 0;
+        left: 0;
+
+        width: 80mm;
+
+        min-height: auto;
+
+        margin: 0;
+        padding: 4mm;
+
+        box-sizing: border-box;
+
+        background: #ffffff !important;
+        color: #000000 !important;
+
+        box-shadow: none !important;
+
+        font-family:
+            "Courier New",
+            Courier,
+            monospace;
+
+        font-size: 12px;
+
+        line-height: 1.35;
+
+        direction: ltr;
+    }
+
+    #returnReceipt .receipt-header {
+        text-align: center;
+    }
+
+    #returnReceipt .receipt-header h2 {
+        margin: 0;
+
+        font-size: 18px;
+    }
+
+    #returnReceipt .receipt-header p {
+        margin: 2px 0 8px;
+
+        font-weight: bold;
+
+        letter-spacing: 1px;
+    }
+
+    #returnReceipt .receipt-meta div {
+        display: flex;
+
+        justify-content: space-between;
+
+        margin-bottom: 2px;
+    }
+
+    #returnReceipt .receipt-divider {
+        border-top: 1px dashed #000000;
+
+        margin: 6px 0;
+    }
+
+    #returnReceipt .receipt-items {
+        width: 100%;
+
+        border-collapse: collapse;
+
+        table-layout: fixed;
+    }
+
+    #returnReceipt .receipt-items th,
+    #returnReceipt .receipt-items td {
+        padding: 2px 0;
+
+        text-align: left;
+
+        vertical-align: top;
+
+        word-break: break-word;
+    }
+
+    #returnReceipt .receipt-items th:nth-child(2),
+    #returnReceipt .receipt-items td:nth-child(2) {
+        text-align: center;
+    }
+
+    #returnReceipt .receipt-items th:last-child,
+    #returnReceipt .receipt-items td:last-child {
+        text-align: right;
+    }
+
+    #returnReceipt .receipt-totals div {
+        display: flex;
+
+        justify-content: space-between;
+
+        margin-bottom: 2px;
+    }
+
+    #returnReceipt .receipt-totals .grand {
+        font-weight: bold;
+
+        font-size: 14px;
+
+        border-top: 1px solid #000000;
+
+        padding-top: 4px;
+
+        margin-top: 4px;
+    }
+
+    #returnReceipt .receipt-reason {
+        margin-top: 6px;
+
+        font-size: 11px;
+    }
+
+    #returnReceipt .receipt-footer {
+        text-align: center;
+
+        margin-top: 10px;
+    }
+
+    #returnReceipt .receipt-footer p {
+        margin: 2px 0;
+    }
+}
+
+
+/* ============================================================
+   Prevent page breaks inside receipt
+   ============================================================ */
+
+@media print {
+
+    #returnReceipt,
+    #returnReceipt table,
+    #returnReceipt tr,
+    #returnReceipt .receipt-totals,
+    #returnReceipt .receipt-reason,
+    #returnReceipt .receipt-footer {
+        page-break-inside: avoid;
+        break-inside: avoid;
+    }
+}
+
+
+/* ============================================================
+   Accessibility - Reduced Motion
+   ============================================================ */
+
+@media (prefers-reduced-motion: reduce) {
+
+    .tm-modal {
+        animation: none;
+    }
+
+    .tm-btn,
+    .field input,
+    .field textarea,
+    .item-quantity input,
+    .return-item {
+        transition: none;
+    }
+}

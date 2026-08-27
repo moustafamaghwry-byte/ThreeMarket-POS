@@ -1,0 +1,362 @@
+/* ============================================================
+   ThreeMarket POS - Sales History
+   Page Styles
+   ============================================================ */
+
+
+/* ============================================================
+   Page
+   ============================================================ */
+
+.sales-history-page {
+
+    width: 100%;
+
+}
+
+
+/* ============================================================
+   Header
+   ============================================================ */
+
+.page-header {
+
+    display: flex;
+
+    align-items: baseline;
+
+    gap: 12px;
+
+    margin-bottom: 20px;
+
+}
+
+.page-header h1 {
+
+    margin: 0;
+
+    font-size: 26px;
+
+}
+
+.page-subtitle {
+
+    color: #7f8c8d;
+
+    font-size: 14px;
+
+}
+
+
+/* ============================================================
+   Filters
+   ============================================================ */
+
+.filters-bar {
+
+    display: flex;
+
+    flex-wrap: wrap;
+
+    align-items: end;
+
+    gap: 12px;
+
+    background: #fff;
+
+    padding: 14px;
+
+    border-radius: 8px;
+
+    margin-bottom: 20px;
+
+    box-shadow: 0 1px 3px rgba(0, 0, 0, .08);
+
+}
+
+.filter-group {
+
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 4px;
+
+}
+
+.filter-group label {
+
+    font-size: 12px;
+
+    color: #7f8c8d;
+
+    font-weight: 600;
+
+}
+
+.filter-group input {
+
+    padding: 8px 10px;
+
+    border: 1px solid #dcdfe4;
+
+    border-radius: 6px;
+
+    font-size: 14px;
+
+}
+
+.filter-search input {
+
+    min-width: 220px;
+
+}
+
+
+/* ============================================================
+   Buttons
+   ============================================================ */
+
+.btn {
+
+    padding: 9px 18px;
+
+    border: none;
+
+    border-radius: 6px;
+
+    font-size: 14px;
+
+    cursor: pointer;
+
+    transition: opacity .15s;
+
+}
+
+.btn:hover {
+
+    opacity: .85;
+
+}
+
+.btn-primary {
+
+    background: #3498db;
+
+    color: #fff;
+
+}
+
+.btn-secondary {
+
+    background: #95a5a6;
+
+    color: #fff;
+
+}
+
+
+/* ============================================================
+   Summary Cards
+   ============================================================ */
+
+.summary-cards {
+
+    display: flex;
+
+    gap: 14px;
+
+    margin-bottom: 20px;
+
+    flex-wrap: wrap;
+
+}
+
+.summary-card {
+
+    flex: 1;
+
+    min-width: 160px;
+
+    background: #fff;
+
+    border-radius: 8px;
+
+    padding: 16px;
+
+    box-shadow: 0 1px 3px rgba(0, 0, 0, .08);
+
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 6px;
+
+    border-right: 4px solid #3498db;
+
+}
+
+.summary-card.success {
+
+    border-right-color: #27ae60;
+
+}
+
+.summary-card.danger {
+
+    border-right-color: #e74c3c;
+
+}
+
+.summary-label {
+
+    font-size: 13px;
+
+    color: #7f8c8d;
+
+}
+
+.summary-value {
+
+    font-size: 24px;
+
+}
+
+
+/* ============================================================
+   Table
+   ============================================================ */
+
+.table-container {
+
+    background: #fff;
+
+    border-radius: 8px;
+
+    box-shadow: 0 1px 3px rgba(0, 0, 0, .08);
+
+    overflow-x: auto;
+
+}
+
+.history-table {
+
+    width: 100%;
+
+    border-collapse: collapse;
+
+    font-size: 14px;
+
+}
+
+.history-table th,
+.history-table td {
+
+    padding: 10px 12px;
+
+    text-align: left;
+
+    border-bottom: 1px solid #ecf0f1;
+
+    white-space: nowrap;
+
+}
+
+.history-table thead th {
+
+    background: #2c3e50;
+
+    color: #fff;
+
+    font-size: 13px;
+
+    position: sticky;
+
+    top: 0;
+
+}
+
+.history-table tbody tr:hover {
+
+    background: #f8f9fa;
+
+}
+
+.has-return {
+
+    color: #e67e22;
+
+    font-weight: 600;
+
+}
+
+
+/* ============================================================
+   Empty State
+   ============================================================ */
+
+.history-empty {
+
+    text-align: center !important;
+
+    padding: 30px !important;
+
+    color: #7f8c8d;
+
+}
+
+
+/* ============================================================
+   Voided Sale
+   ============================================================ */
+
+.voided-sale {
+
+    color: #e74c3c;
+
+    font-weight: 600;
+
+}
+
+
+/* ============================================================
+   Responsive
+   ============================================================ */
+
+@media (max-width: 768px) {
+
+    .filters-bar {
+
+        align-items: stretch;
+
+    }
+
+    .filter-group {
+
+        width: 100%;
+
+    }
+
+    .filter-search input {
+
+        min-width: 0;
+
+        width: 100%;
+
+        box-sizing: border-box;
+
+    }
+
+    .btn {
+
+        width: 100%;
+
+    }
+
+    .summary-card {
+
+        min-width: 100%;
+
+    }
+
+}

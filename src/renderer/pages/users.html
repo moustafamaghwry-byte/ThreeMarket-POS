@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ThreeMarket POS — Users</title>
+    <link rel="stylesheet" href="/css/reset.css">
+    <link rel="stylesheet" href="/css/variables.css">
+    <link rel="stylesheet" href="/css/themes.css">
+    <link rel="stylesheet" href="/css/dashboard.css">
+    <link rel="stylesheet" href="/css/products.css">
+    <link rel="stylesheet" href="/css/users.css">
+</head>
+<body>
+    <div class="app-layout">
+        <div id="sidebar-container"></div>
+        <main class="main-content">
+            <div id="topbar-container"></div>
+            <section class="page-content">
+              <div class="page-header">
+                    <div>
+                        <h1 data-i18n="users.title">Users</h1>
+                        <p data-i18n="users.subtitle">Manage team members and permissions</p>
+                    </div>
+                    <button id="addUserButton" class="primary-button" data-i18n="users.addUser">Add User</button>
+                </div>
+                <div class="table-container">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                               <th data-i18n="users.table.username">Username</th>
+                                <th data-i18n="users.table.role">Role</th>
+                                <th data-i18n="users.table.permissions">Permissions</th>
+                                <th data-i18n="users.table.status">Status</th>
+                                <th data-i18n="users.table.actions">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="usersTableBody"></tbody>
+                    </table>
+                </div>
+                <div id="usersEmptyState" class="empty-state" style="display:none;">
+                    <div class="empty-icon">
+                        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+                            <circle cx="9" cy="7" r="4"/>
+                        </svg>
+                    </div>
+                    <h2 data-i18n="users.empty.title">No users yet</h2>
+                    <p data-i18n="users.empty.description">Add your first team member to get started.</p>
+                    <button id="emptyAddUserButton" class="primary-button" data-i18n="users.addUser">Add User</button>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- User Modal -->
+    <div id="userModal" class="modal-overlay" style="display: none;">
+        <div class="modal" style="max-width: 560px;">
+            <div class="modal-header">
+                <div>
+                    <h2 id="userModalTitle" data-i18n="users.modal.addTitle">Add User</h2>
+                    <p data-i18n="users.modal.subtitle">Create a new team member account</p>
+                </div>
+                <button id="closeUserModal" class="modal-close">×</button>
+            </div>
+            <form id="userForm" style="padding: 24px; display: grid; gap: 16px;">
+                <div class="form-group">
+                    <label><span data-i18n="users.form.username">Username</span> <span class="required">*</span></label>
+                    <input type="text" id="userUsername" required autocomplete="off">
+                </div>
+                <div class="form-group">
+                    <label><span data-i18n="users.form.password">Password</span> <span class="required">*</span></label>
+                    <input type="password" id="userPassword" required>
+                </div>
+                <div class="form-group">
+                    <label><span data-i18n="users.form.role">Role</span> <span class="required">*</span></label>
+                    <select id="userRole" required>
+                        <option value="admin" data-i18n="users.roles.admin">Administrator</option>
+                        <option value="manager" data-i18n="users.roles.manager">Manager</option>
+                        <option value="cashier" data-i18n="users.roles.cashier">Cashier</option>
+                        <option value="custom" data-i18n="users.roles.custom">Custom</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label data-i18n="users.form.language">Language</label>
+                    <select id="userLanguage">
+                        <option value="en">English</option>
+                        <option value="ar">العربية</option>
+                    </select>
+                </div>
+                <div id="permissionsSection" style="display: none; border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 16px;">
+                    <label style="font-weight: 600; display: block; margin-bottom: 12px;" data-i18n="users.form.permissions">Page Permissions</label>
+                    <div id="permissionsGrid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;"></div>
+                </div>
+                <div class="form-group checkbox-group">
+                    <label><input type="checkbox" id="userActive" checked> <span data-i18n="users.form.active">Active Account</span></label>
+                </div>
+                <div id="userFormError" class="form-error" style="display: none;"></div>
+                <div class="modal-actions">
+                    <button type="button" id="cancelUserButton" class="secondary-button" data-i18n="common.cancel">Cancel</button>
+                    <button type="submit" class="primary-button" data-i18n="users.saveButton">Save</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script type="module" src="/js/users.js"></script>
+</body>
+</html>

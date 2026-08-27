@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ThreeMarket POS — Settings</title>
+
+    <link rel="stylesheet" href="/css/reset.css">
+    <link rel="stylesheet" href="/css/variables.css">
+    <link rel="stylesheet" href="/css/themes.css">
+    <link rel="stylesheet" href="/css/dashboard.css">
+    <link rel="stylesheet" href="/css/products.css">
+    <link rel="stylesheet" href="/css/settings.css">
+</head>
+
+<body>
+
+    <div class="app-layout">
+
+        <div id="sidebar-container"></div>
+
+        <main class="main-content">
+
+            <div id="topbar-container"></div>
+
+            <section class="page-content settings-page">
+
+                <div class="page-header">
+                    <div>
+                        <h1 data-i18n="settings.title">Settings</h1>
+                        <p data-i18n="settings.subtitle">Manage your store configuration</p>
+                    </div>
+                </div>
+
+                <div class="settings-tabs">
+                    <button class="settings-tab active" data-tab="store" data-i18n="settings.tabs.store">Store Info</button>
+                    <button class="settings-tab" data-tab="billing" data-i18n="settings.tabs.billing">Billing & Receipts</button>
+                </div>
+
+                <!-- Store Info Tab -->
+                <div class="settings-panel active" id="panel-store">
+
+                    <form id="storeForm" class="settings-form">
+
+                        <div class="settings-section">
+                            <h2 data-i18n="settings.storeSection.title">Store Details</h2>
+                            <p data-i18n="settings.storeSection.description">Shown on printed receipts</p>
+
+                            <div class="settings-grid">
+                                <div class="form-group">
+                                    <label for="storeName" data-i18n="settings.storeSection.name">Store Name</label>
+                                    <input type="text" id="storeName" autocomplete="off">
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="storeTagline" data-i18n="settings.storeSection.tagline">Tagline</label>
+                                    <input type="text" id="storeTagline" autocomplete="off">
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="storeBranch" data-i18n="settings.storeSection.branch">Branch Name</label>
+                                    <input type="text" id="storeBranch" autocomplete="off">
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="storePhone" data-i18n="settings.storeSection.phone">Phone</label>
+                                    <input type="text" id="storePhone" autocomplete="off">
+                                </div>
+
+                                <div class="form-group settings-grid-full">
+                                    <label for="storeAddress" data-i18n="settings.storeSection.address">Address</label>
+                                    <input type="text" id="storeAddress" autocomplete="off">
+                                </div>
+
+                                <div class="form-group settings-grid-full">
+                                    <label for="storeLogo" data-i18n="settings.storeSection.logo">Logo Path</label>
+                                    <input type="text" id="storeLogo" placeholder="/assets/images/logo.png" autocomplete="off">
+                                    <span class="field-hint" data-i18n="settings.storeSection.logoHint">Path to logo image file, e.g. /assets/images/logo.png</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div id="storeFormMessage" class="settings-message" style="display: none;"></div>
+
+                        <div class="settings-actions">
+                            <button type="submit" class="primary-button" data-i18n="settings.save">Save Changes</button>
+                        </div>
+
+                    </form>
+
+                </div>
+
+                <!-- Billing & Receipts Tab -->
+                <div class="settings-panel" id="panel-billing">
+
+                    <form id="billingForm" class="settings-form">
+
+                        <div class="settings-section">
+                            <h2 data-i18n="settings.billingSection.title">Receipt Footer</h2>
+                            <p data-i18n="settings.billingSection.description">Custom message printed at the bottom of receipts</p>
+
+                            <div class="form-group">
+                                <label for="footerText" data-i18n="settings.billingSection.footerText">Footer Message</label>
+                                <input type="text" id="footerText" autocomplete="off">
+                            </div>
+                        </div>
+
+                        <!-- ============================================================
+                             VAT Settings Section
+                             Controls whether VAT is enabled and defines the VAT rate.
+                             ============================================================ -->
+                        <div class="settings-section">
+                            <h2 data-i18n="settings.vatSection.title">VAT Settings</h2>
+                            <p data-i18n="settings.vatSection.description">Configure VAT for the entire application</p>
+
+                            <div class="settings-grid">
+                                <div class="form-group settings-grid-full">
+                                    <label class="checkbox-group">
+                                        <input type="checkbox" id="vatEnabled" />
+                                        <span data-i18n="settings.vatSection.enable">Enable VAT</span>
+                                    </label>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="vatRate" data-i18n="settings.vatSection.rate">VAT Rate (%)</label>
+                                    <input type="number" id="vatRate" min="0" max="100" step="0.01" value="14" autocomplete="off" />
+                                </div>
+                            </div>
+
+                            <div id="vatSettingsMessage" class="settings-message" style="display: none;"></div>
+
+                            <div class="settings-actions" style="margin-top: 1rem;">
+                                <button type="button" class="primary-button" id="saveVatSettingsBtn" data-i18n="settings.vatSection.save">Save VAT Settings</button>
+                            </div>
+                        </div>
+
+                        <div class="settings-section">
+                            <h2 data-i18n="settings.voidSection.title">Void / Refund Rules</h2>
+                            <p data-i18n="settings.voidSection.description">Control who can void a sale and which sales can be voided</p>
+
+                            <div class="settings-grid">
+                                <div class="form-group">
+                                    <label for="voidPermission" data-i18n="settings.voidSection.permission">Who Can Void</label>
+                                    <select id="voidPermission">
+                                        <option value="admin_only" data-i18n="settings.voidSection.adminOnly">Admin only</option>
+                                        <option value="all_cashiers" data-i18n="settings.voidSection.allCashiers">All cashiers</option>
+                                    </select>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="voidScope" data-i18n="settings.voidSection.scope">Scope</label>
+                                    <select id="voidScope">
+                                        <option value="last_sale_only" data-i18n="settings.voidSection.lastSaleOnly">Last sale only</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div id="billingFormMessage" class="settings-message" style="display: none;"></div>
+
+                        <div class="settings-actions">
+                            <button type="submit" class="primary-button" data-i18n="settings.save">Save Changes</button>
+                        </div>
+
+                    </form>
+
+                </div>
+
+            </section>
+
+        </main>
+
+    </div>
+
+    <script type="module" src="/js/settings.js"></script>
+
+</body>
+
+</html>

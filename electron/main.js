@@ -1,10 +1,9 @@
 // ============================================================
 // ThreeMarket POS - Electron Main Process
-// This file manages the Electron application window,
-// authentication, sessions, navigation, and product IPC.
+// Handles application lifecycle, IPC communication,
+// authentication, products, sales, returns, settings,
+// users, store configuration and cash drawer.
 // ============================================================
-const productService =
-    require("../src/services/product.service");
 
 const {
     app,
@@ -14,12 +13,15 @@ const {
 
 const path = require("path");
 
+// ============================================================
+// Services
+// ============================================================
 
-// ============================================================
-// Application Services
-// These services contain the business logic used by
-// the Electron main process.
-// ============================================================
+const returnsService =
+    require("../src/services/returns.service");
+
+const storeService =
+    require("../src/services/store.service");
 
 const authService =
     require("../src/services/auth.service");
@@ -30,111 +32,207 @@ const sessionService =
 const productService =
     require("../src/services/product.service");
 
+const saleService =
+    require("../src/services/sale.service");
+
+const settingsService =
+    require("../src/services/settings.service");
 
 // ============================================================
-// Create Main Application Window
-// Creates the Electron BrowserWindow and loads the
-// renderer application from the Vite development server.
+// Permission Helper
+// Admin and Administrator have full access.
+// Other users need the required page permission.
+// ============================================================
+
+function requireWritePermission(page) {
+
+    const session =
+        sessionService.getSession();
+
+    // --------------------------------------------------------
+    // User must be authenticated.
+    // --------------------------------------------------------
+
+    if (!session) {
+
+        return {
+            allowed: false,
+
+            error: {
+                success: false,
+                message:
+                    "Not authenticated."
+            }
+        };
+    }
+
+    // --------------------------------------------------------
+    // Administrators always have full access.
+    // --------------------------------------------------------
+
+    if (
+        session.role === "admin" ||
+        session.role === "administrator"
+    ) {
+
+        return {
+            allowed: true
+        };
+    }
+
+    // --------------------------------------------------------
+    // Check normal user permissions.
+    // --------------------------------------------------------
+
+    const permissions =
+        session.permissions || {};
+
+    if (
+        permissions[page] !== "write"
+    ) {
+
+        return {
+            allowed: false,
+
+            error: {
+                success: false,
+                message:
+                    "You do not have permission to perform this action."
+            }
+        };
+    }
+
+    return {
+        allowed: true
+    };
+}
+
+// ============================================================
+// Create Main Window
 // ============================================================
 
 function createWindow() {
 
-    const win = new BrowserWindow({
+    const win =
+        new BrowserWindow({
 
-        width: 1400,
+            width: 1400,
+            height: 900,
 
-        height: 900,
+            minWidth: 1200,
+            minHeight: 700,
 
-        minWidth: 1200,
+            autoHideMenuBar: true,
 
-        minHeight: 700,
+            show: false,
 
-        autoHideMenuBar: true,
+            webPreferences: {
 
+                preload:
+                    path.join(
+                        __dirname,
+                        "preload.js"
+                    ),
 
-        // ----------------------------------------------------
-        // Renderer Security Configuration
-        // Context isolation keeps the renderer isolated from
-        // Node.js APIs. Node integration remains disabled.
-        // ----------------------------------------------------
+                contextIsolation: true,
 
-        webPreferences: {
+                nodeIntegration: false
+            }
+        });
 
-            preload:
-                path.join(
-                    __dirname,
-                    "preload.js"
-                ),
+    // --------------------------------------------------------
+    // Show window after the page has loaded.
+    // --------------------------------------------------------
 
-            contextIsolation: true,
+    win.once(
+        "ready-to-show",
+        () => {
 
-            nodeIntegration: false
+            win.show();
 
+            win.focus();
         }
-
-    });
-
-
-    // --------------------------------------------------------
-    // Load the renderer application.
-    // Vite serves the application during development.
-    // --------------------------------------------------------
-
-    win.loadURL(
-        "http://localhost:5173/"
     );
 
+    // --------------------------------------------------------
+    // Production / Development loading.
+    // --------------------------------------------------------
+
+    if (
+        process.env.NODE_ENV ===
+        "production"
+    ) {
+
+        win.loadFile(
+            path.join(
+                __dirname,
+                "../dist/index.html"
+            )
+        );
+
+    } else {
+
+        win.loadURL(
+            "http://localhost:5173/"
+        );
+    }
 }
 
-
 // ============================================================
-// Authentication IPC
-// Handles login requests coming from the renderer process.
+// Authentication
 // ============================================================
 
 ipcMain.handle(
     "auth:login",
-    async (event, credentials) => {
+    async (_event, credentials) => {
 
-        const result =
-            authService.login(
-                credentials.username,
-                credentials.password
-            );
+        try {
 
-
-        // ----------------------------------------------------
-        // Create a session after successful authentication.
-        // ----------------------------------------------------
-
-        if (result.success) {
-
-            const session =
-                sessionService.createSession(
-                    result.user
+            const result =
+                authService.login(
+                    credentials.username,
+                    credentials.password
                 );
 
+            // ------------------------------------------------
+            // Create application session after successful login.
+            // ------------------------------------------------
+
+            if (
+                result.success
+            ) {
+
+                const session =
+                    sessionService.createSession(
+                        result.user
+                    );
+
+                return {
+                    success: true,
+                    user: session
+                };
+            }
+
+            return result;
+
+        } catch (error) {
+
+            console.error(
+                "[IPC] auth:login failed:",
+                error
+            );
 
             return {
-
-                success: true,
-
-                user: session
-
+                success: false,
+                message:
+                    "Login failed."
             };
-
         }
-
-
-        return result;
-
     }
 );
 
-
 // ============================================================
-// Session IPC
-// Handles retrieving the current logged-in session.
+// Session
 // ============================================================
 
 ipcMain.handle(
@@ -142,15 +240,8 @@ ipcMain.handle(
     () => {
 
         return sessionService.getSession();
-
     }
 );
-
-
-// ============================================================
-// Session Logout IPC
-// Clears the current user session.
-// ============================================================
 
 ipcMain.handle(
     "session:logout",
@@ -158,21 +249,14 @@ ipcMain.handle(
 
         sessionService.clearSession();
 
-
         return {
-
             success: true
-
         };
-
     }
 );
 
-
 // ============================================================
-// Dashboard Navigation IPC
-// Provides a backend-controlled way to navigate to
-// the Dashboard page.
+// Navigation
 // ============================================================
 
 ipcMain.handle(
@@ -184,25 +268,112 @@ ipcMain.handle(
                 event.sender
             );
 
+        // ----------------------------------------------------
+        // Make sure the BrowserWindow still exists.
+        // ----------------------------------------------------
 
-        win.loadURL(
-            "http://localhost:5173/pages/dashboard.html"
-        );
+        if (!win) {
 
+            return {
+                success: false,
+                message:
+                    "Application window not found."
+            };
+        }
+
+        // ----------------------------------------------------
+        // Production build.
+        // ----------------------------------------------------
+
+        if (
+            process.env.NODE_ENV ===
+            "production"
+        ) {
+
+            win.loadFile(
+                path.join(
+                    __dirname,
+                    "../dist/pages/dashboard.html"
+                )
+            );
+
+        } else {
+
+            // ------------------------------------------------
+            // Development server.
+            // ------------------------------------------------
+
+            win.loadURL(
+                "http://localhost:5173/pages/dashboard.html"
+            );
+        }
 
         return {
-
             success: true
-
         };
-
     }
 );
 
+// ============================================================
+// Navigate to History Page
+// Loads the History page in production or development mode.
+// ============================================================
+
+ipcMain.handle(
+    "navigate:history",
+    (event) => {
+
+        const win =
+            BrowserWindow.fromWebContents(
+                event.sender
+            );
+
+        // ----------------------------------------------------
+        // Make sure the BrowserWindow still exists.
+        // ----------------------------------------------------
+
+        if (!win) {
+
+            return {
+                success: false
+            };
+        }
+
+        // ----------------------------------------------------
+        // Production build.
+        // ----------------------------------------------------
+
+        if (
+            process.env.NODE_ENV ===
+            "production"
+        ) {
+
+            win.loadFile(
+                path.join(
+                    __dirname,
+                    "../dist/pages/history.html"
+                )
+            );
+
+        } else {
+
+            // ------------------------------------------------
+            // Development server.
+            // ------------------------------------------------
+
+            win.loadURL(
+                "http://localhost:5173/pages/history.html"
+            );
+        }
+
+        return {
+            success: true
+        };
+    }
+);
 
 // ============================================================
-// Product IPC - Get All Products
-// Returns all products from the Product Service.
+// Products
 // ============================================================
 
 ipcMain.handle(
@@ -210,174 +381,779 @@ ipcMain.handle(
     () => {
 
         return productService.getAllProducts();
-
     }
 );
 
-
-// ============================================================
-// Product IPC - Create Product
-// Creates a new product using the Product Service.
-// ============================================================
-
 ipcMain.handle(
     "products:create",
-    (event, productData) => {
+    (_event, productData) => {
+
+        const check =
+            requireWritePermission(
+                "products"
+            );
+
+        if (!check.allowed) {
+
+            return check.error;
+        }
 
         return productService.createProduct(
             productData
         );
-
     }
 );
-
-
-// ============================================================
-// Product IPC - Update Product
-// Updates an existing product using its ID.
-// ============================================================
 
 ipcMain.handle(
     "products:update",
-    (event, data) => {
+    (_event, { id, updates }) => {
+
+        const check =
+            requireWritePermission(
+                "products"
+            );
+
+        if (!check.allowed) {
+
+            return check.error;
+        }
 
         return productService.updateProduct(
-            data.id,
-            data.productData
+            id,
+            updates
         );
-
     }
 );
 
-
-// ============================================================
-// Product IPC - Delete Product
-// Deletes a product using its ID.
-// ============================================================
-
 ipcMain.handle(
     "products:delete",
-    (event, id) => {
+    (_event, id) => {
+
+        const check =
+            requireWritePermission(
+                "products"
+            );
+
+        if (!check.allowed) {
+
+            return check.error;
+        }
 
         return productService.deleteProduct(
             id
         );
-
     }
 );
 
-
 // ============================================================
-// Product IPC - Search Products
-// Searches products by name, SKU, barcode,
-// or category.
+// Store Settings
 // ============================================================
 
 ipcMain.handle(
-    "products:search",
-    (event, searchTerm) => {
+    "store:getInfo",
+    () => {
 
-        return productService.searchProducts(
-            searchTerm
+        return storeService.getStoreInfo();
+    }
+);
+
+ipcMain.handle(
+    "store:update",
+    (_event, updates) => {
+
+        const check =
+            requireWritePermission(
+                "settings"
+            );
+
+        if (!check.allowed) {
+
+            return check.error;
+        }
+
+        return storeService.updateStoreInfo(
+            updates
         );
-
-    }
-);
-
-
-// ============================================================
-// Product IPC - Low Stock Products
-// Returns products that reached or dropped below
-// their configured minimum stock level.
-// ============================================================
-
-ipcMain.handle(
-    "products:lowStock",
-    () => {
-
-        return productService.getLowStockProducts();
-
-    }
-);
-
-
-// ============================================================
-// Product IPC - Product Count
-// Returns the total number of products.
-// This will later be used by the Dashboard statistics.
-// ============================================================
-
-ipcMain.handle(
-    "products:count",
-    () => {
-
-        return productService.getProductCount();
-
     }
 );
 
 // ============================================================
-// Product IPC Handlers
-// Exposes product operations to the renderer process.
-// ============================================================
-
-
-// ============================================================
-// Get Products
-// Returns all products from the product service.
+// VAT / Tax Settings
+// Application-wide persistent VAT configuration.
+// VAT is stored through settings.service.js.
 // ============================================================
 
 ipcMain.handle(
-    "products:getAll",
-    () => {
+    "settings:get-tax",
+    async () => {
 
-        return productService.getAllProducts();
+        try {
 
+            const settings =
+                settingsService.getTaxSettings();
+
+            console.log(
+                "[IPC] settings:get-tax",
+                settings
+            );
+
+            return {
+                success: true,
+
+                settings: {
+
+                    vatEnabled:
+                        Boolean(
+                            settings?.vatEnabled
+                        ),
+
+                    vatRate:
+                        Number(
+                            settings?.vatRate
+                        ) || 0
+                }
+            };
+
+        } catch (error) {
+
+            console.error(
+                "[IPC] settings:get-tax failed:",
+                error
+            );
+
+            return {
+                success: false,
+
+                message:
+                    "Failed to load tax settings.",
+
+                settings: {
+
+                    vatEnabled: false,
+
+                    vatRate: 14
+                }
+            };
+        }
     }
 );
 
+ipcMain.handle(
+    "settings:save-tax",
+    async (_event, taxSettings) => {
+
+        // ----------------------------------------------------
+        // Check settings write permission.
+        // ----------------------------------------------------
+
+        const check =
+            requireWritePermission(
+                "settings"
+            );
+
+        if (!check.allowed) {
+
+            return check.error;
+        }
+
+        try {
+
+            const vatEnabled =
+                Boolean(
+                    taxSettings?.vatEnabled
+                );
+
+            let vatRate =
+                Number(
+                    taxSettings?.vatRate
+                );
+
+            // ------------------------------------------------
+            // Use 14% as default when the supplied value
+            // is invalid.
+            // ------------------------------------------------
+
+            if (
+                !Number.isFinite(
+                    vatRate
+                )
+            ) {
+
+                vatRate = 14;
+            }
+
+            // ------------------------------------------------
+            // Keep VAT between 0% and 100%.
+            // ------------------------------------------------
+
+            vatRate =
+                Math.max(
+                    0,
+                    Math.min(
+                        vatRate,
+                        100
+                    )
+                );
+
+            const result =
+                settingsService.saveTaxSettings(
+                    {
+                        vatEnabled,
+                        vatRate
+                    }
+                );
+
+            console.log(
+                "[SETTINGS] VAT saved:",
+                {
+                    vatEnabled,
+                    vatRate
+                }
+            );
+
+            return result;
+
+        } catch (error) {
+
+            console.error(
+                "[IPC] settings:save-tax failed:",
+                error
+            );
+
+            return {
+                success: false,
+
+                message:
+                    "Failed to save tax settings."
+            };
+        }
+    }
+);
 
 // ============================================================
-// Create Product
-// Creates a new product through the product service.
+// Sales
 // ============================================================
 
 ipcMain.handle(
-    "products:create",
-    (event, productData) => {
+    "sales:create",
+    (_event, saleData) => {
 
-        return productService.createProduct(
-            productData
+        const check =
+            requireWritePermission(
+                "sales"
+            );
+
+        if (!check.allowed) {
+
+            return check.error;
+        }
+
+        return saleService.createSale(
+            saleData
         );
-
     }
 );
-// ============================================================
-// Application Ready
-// Creates the main application window after Electron
-// has finished initializing.
-// ============================================================
 
-app.whenReady().then(
-    createWindow
+ipcMain.handle(
+    "sales:getAll",
+    () => {
+
+        return saleService.getAllSales();
+    }
 );
 
+ipcMain.handle(
+    "sales:getTodaySummary",
+    () => {
+
+        return saleService.getTodaySummary();
+    }
+);
+
+ipcMain.handle(
+    "sales:getTopProductsInRange",
+    (_event, { from, to }) => {
+
+        return saleService.getTopProductsInRange(
+            from,
+            to
+        );
+    }
+);
 
 // ============================================================
-// Application Shutdown
-// Keeps the standard Electron behavior on macOS while
-// closing the application normally on Windows/Linux.
+// Returns
+// Admins can always create returns.
+// Other users require:
+// permissions.returns === "write"
+// ============================================================
+
+ipcMain.handle(
+    "returns:findSale",
+    (_event, identifier) => {
+
+        try {
+
+            return returnsService.getSaleForReturn(
+                identifier
+            );
+
+        } catch (error) {
+
+            console.error(
+                "[Returns] Find sale failed:",
+                error
+            );
+
+            return {
+                success: false,
+                message:
+                    "Failed to find sale."
+            };
+        }
+    }
+);
+
+ipcMain.handle(
+    "returns:getSaleForReturn",
+    (_event, identifier) => {
+
+        try {
+
+            return returnsService.getSaleForReturn(
+                identifier
+            );
+
+        } catch (error) {
+
+            console.error(
+                "[Returns] Get sale failed:",
+                error
+            );
+
+            return {
+                success: false,
+                message:
+                    "Failed to find sale."
+            };
+        }
+    }
+);
+
+ipcMain.handle(
+    "returns:calculate",
+    (_event, { saleId, items }) => {
+
+        try {
+
+            return returnsService.calculateReturn(
+                saleId,
+                items
+            );
+
+        } catch (error) {
+
+            console.error(
+                "[Returns] Calculate failed:",
+                error
+            );
+
+            return {
+                success: false,
+                message:
+                    "Failed to calculate return."
+            };
+        }
+    }
+);
+
+ipcMain.handle(
+    "returns:create",
+    (_event, returnData) => {
+
+        // ----------------------------------------------------
+        // Check Returns permission.
+        // Admin automatically passes this check.
+        // ----------------------------------------------------
+
+        const check =
+            requireWritePermission(
+                "returns"
+            );
+
+        if (!check.allowed) {
+
+            return check.error;
+        }
+
+        const session =
+            sessionService.getSession();
+
+        // ----------------------------------------------------
+        // Make sure the user is still authenticated.
+        // ----------------------------------------------------
+
+        if (!session) {
+
+            return {
+                success: false,
+                message:
+                    "Not authenticated."
+            };
+        }
+
+        try {
+
+            const result =
+                returnsService.createReturn({
+
+                    ...returnData,
+
+                    userId:
+                        session.userId ||
+                        null,
+
+                    username:
+                        session.username ||
+                        null
+                });
+
+            console.log(
+                "[Returns] Return created:",
+                result
+            );
+
+            return result;
+
+        } catch (error) {
+
+            console.error(
+                "[Returns] Create failed:",
+                error
+            );
+
+            return {
+                success: false,
+                message:
+                    "Failed to process return."
+            };
+        }
+    }
+);
+
+ipcMain.handle(
+    "returns:getAll",
+    () => {
+
+        try {
+
+            return returnsService.getAllReturns();
+
+        } catch (error) {
+
+            console.error(
+                "[Returns] Get all failed:",
+                error
+            );
+
+            return [];
+        }
+    }
+);
+
+ipcMain.handle(
+    "returns:getSaleReturns",
+    (_event, saleIdentifier) => {
+
+        try {
+
+            return returnsService.getSaleReturns(
+                saleIdentifier
+            );
+
+        } catch (error) {
+
+            console.error(
+                "[Returns] Get sale returns failed:",
+                error
+            );
+
+            return [];
+        }
+    }
+);
+
+// ============================================================
+// Void Last Sale
+// ============================================================
+
+ipcMain.handle(
+    "sales:voidLastSale",
+    () => {
+
+        const session =
+            sessionService.getSession();
+
+        // ----------------------------------------------------
+        // User must be authenticated.
+        // ----------------------------------------------------
+
+        if (!session) {
+
+            return {
+                success: false,
+                message:
+                    "Not authenticated."
+            };
+        }
+
+        const storeInfo =
+            storeService.getStoreInfo();
+
+        // ----------------------------------------------------
+        // Respect store-level void permission.
+        // ----------------------------------------------------
+
+        if (
+            storeInfo.voidPermission ===
+                "admin_only" &&
+            session.role !== "admin" &&
+            session.role !== "administrator"
+        ) {
+
+            return {
+                success: false,
+                message:
+                    "Only administrators can void sales."
+            };
+        }
+
+        return saleService.voidLastSale(
+            session.userId,
+            session.username
+        );
+    }
+);
+
+ipcMain.handle(
+    "sales:getLastActiveSale",
+    () => {
+
+        return saleService.getLastActiveSale();
+    }
+);
+
+// ============================================================
+// Cash Drawer
+// ============================================================
+
+ipcMain.handle(
+    "cashDrawer:open",
+    async () => {
+
+        try {
+
+            // ------------------------------------------------
+            // ESC/POS command for opening the cash drawer.
+            // ------------------------------------------------
+
+            const command =
+                Buffer.from([
+                    0x1B,
+                    0x70,
+                    0x00,
+                    0x19,
+                    0xFA
+                ]);
+
+            console.log(
+                "[Cash Drawer] Open command:",
+                command.toString("hex")
+            );
+
+            return {
+                success: true,
+
+                message:
+                    "Cash drawer command prepared."
+            };
+
+        } catch (error) {
+
+            console.error(
+                "[Cash Drawer] Failed:",
+                error
+            );
+
+            return {
+                success: false,
+
+                message:
+                    "Failed to open cash drawer."
+            };
+        }
+    }
+);
+
+// ============================================================
+// Users
+// ============================================================
+
+ipcMain.handle(
+    "users:getAll",
+    () => {
+
+        return authService.getAllUsers();
+    }
+);
+
+ipcMain.handle(
+    "users:create",
+    (_event, userData) => {
+
+        const check =
+            requireWritePermission(
+                "users"
+            );
+
+        if (!check.allowed) {
+
+            return check.error;
+        }
+
+        return authService.createUser(
+            userData
+        );
+    }
+);
+
+ipcMain.handle(
+    "users:update",
+    (_event, { id, updates }) => {
+
+        const check =
+            requireWritePermission(
+                "users"
+            );
+
+        if (!check.allowed) {
+
+            return check.error;
+        }
+
+        return authService.updateUser(
+            id,
+            updates
+        );
+    }
+);
+
+ipcMain.handle(
+    "users:delete",
+    (_event, id) => {
+
+        const check =
+            requireWritePermission(
+                "users"
+            );
+
+        if (!check.allowed) {
+
+            return check.error;
+        }
+
+        return authService.deleteUser(
+            id
+        );
+    }
+);
+
+// ============================================================
+// Application Lifecycle
+// ============================================================
+
+app.whenReady().then(() => {
+
+    console.log(
+        "============================================"
+    );
+
+    console.log(
+        "ThreeMarket POS Main Process Started"
+    );
+
+    console.log(
+        "Electron:",
+        process.versions.electron
+    );
+
+    console.log(
+        "Settings Service:",
+        typeof settingsService.getTaxSettings
+    );
+
+    console.log(
+        "Returns Service:",
+        typeof returnsService.createReturn
+    );
+
+    console.log(
+        "VAT IPC Handler Registered: settings:get-tax"
+    );
+
+    console.log(
+        "Returns IPC Handler Registered"
+    );
+
+    console.log(
+        "============================================"
+    );
+
+    // --------------------------------------------------------
+    // Create the main application window.
+    // --------------------------------------------------------
+
+    createWindow();
+
+    // --------------------------------------------------------
+    // macOS:
+    // Re-create the window when the application is activated.
+    // --------------------------------------------------------
+
+    app.on(
+        "activate",
+        () => {
+
+            if (
+                BrowserWindow
+                    .getAllWindows()
+                    .length === 0
+            ) {
+
+                createWindow();
+            }
+        }
+    );
+});
+
+// ============================================================
+// Close Application
 // ============================================================
 
 app.on(
     "window-all-closed",
     () => {
 
-        if (process.platform !== "darwin") {
+        // ----------------------------------------------------
+        // Keep application behavior standard on macOS.
+        // ----------------------------------------------------
+
+        if (
+            process.platform !==
+            "darwin"
+        ) {
 
             app.quit();
-
         }
-
     }
 );

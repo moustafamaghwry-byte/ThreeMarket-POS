@@ -1,1097 +1,353 @@
-// ============================================================
-// ThreeMarket POS - Products Page
-// Handles product loading, searching, product modal controls,
-// and product creation workflow.
-// ============================================================
-
-import {
-    loadTranslations,
-    toggleLanguage
-} from "./i18n.js";
-
-import {
-    loadAppShell
-} from "./component-loader.js";
-
-import {
-    initializeNavigation
-} from "./navigation.js";
-
-
-// ============================================================
-// Products State
-// Stores all products loaded from the backend.
-// ============================================================
+import { loadTranslations, toggleLanguage, getTranslation, updatePageText } from "./i18n.js";
+import { loadAppShell } from "./component-loader.js";
+import { initializeNavigation, applyRoleBasedAccess, checkRedirectLoop } from "./navigation.js";
+import permissionsConfig from "../config/permissions.config.json";
 
 let products = [];
-
-
-// ============================================================
-// Initialize Products Page
-// Validates the session and initializes all page components.
-// ============================================================
+let editingProductId = null;
+let canWriteProducts = false;
 
 async function initializeProducts() {
-
     try {
-
-        // ----------------------------------------------------
-        // Validate the current authenticated session.
-        // ----------------------------------------------------
-
-        const session =
-            await window.api.getSession();
-
+        const session = await window.api.getSession();
 
         if (!session) {
-
             window.location.href = "/";
-
             return;
-
         }
 
-
-        // ----------------------------------------------------
-        // Load shared application components.
-        // ----------------------------------------------------
+        if (session.role === "administrator") session.role = "admin";
 
         await loadAppShell();
 
+        // Dynamically load modal if container exists
+        const modalContainer = document.getElementById("modal-container");
+        if (modalContainer) {
+            const response = await fetch("/components/modal.html");
+            const html = await response.text();
+            modalContainer.innerHTML = html;
+            // Re-run translations after modal loads
+            updatePageText();
+        }
 
-        // ----------------------------------------------------
-        // Load application translations.
-        // ----------------------------------------------------
+        const rolePerms = session.permissions || permissionsConfig.rolePresets[session.role] || {};
+
+        if (!rolePerms.products || rolePerms.products === "none") {
+            const fallback = permissionsConfig.allPages.find(p => rolePerms[p] && rolePerms[p] !== "none") || "sales";
+            if (checkRedirectLoop()) return;
+            window.location.href = `/pages/${fallback}.html`;
+            return;
+        }
+
+        canWriteProducts = rolePerms.products === "write";
+
+        const usernameEl = document.getElementById("currentUsername");
+        const roleEl = document.getElementById("currentRole");
+        if (usernameEl) usernameEl.textContent = session.username;
+        if (roleEl) roleEl.textContent = session.role;
 
         await loadTranslations();
-
-
-        // ----------------------------------------------------
-        // Initialize application navigation.
-        // ----------------------------------------------------
-
         initializeNavigation();
+        applyRoleBasedAccess(session);
 
-
-        // ----------------------------------------------------
-        // Display current username.
-        // ----------------------------------------------------
-
-        const usernameElement =
-            document.getElementById(
-                "currentUsername"
-            );
-
-
-        if (usernameElement) {
-
-            usernameElement.textContent =
-                session.username;
-
+        const langBtn = document.getElementById("languageButton");
+        if (langBtn) {
+            langBtn.addEventListener("click", async () => {
+                await toggleLanguage();
+                renderProducts(products);
+            });
         }
 
-
-        // ----------------------------------------------------
-        // Display current user role.
-        // ----------------------------------------------------
-
-        const roleElement =
-            document.getElementById(
-                "currentRole"
-            );
-
-
-        if (roleElement) {
-
-            roleElement.textContent =
-                session.role;
-
+        const logoutBtn = document.getElementById("logoutButton");
+        if (logoutBtn) {
+            logoutBtn.addEventListener("click", async () => {
+                const result = await window.api.logout();
+                if (result.success) window.location.href = "/";
+            });
         }
-
-
-        // ----------------------------------------------------
-        // Initialize language button.
-        // ----------------------------------------------------
-
-        const languageButton =
-            document.getElementById(
-                "languageButton"
-            );
-
-
-        if (languageButton) {
-
-            languageButton.addEventListener(
-                "click",
-                toggleLanguage
-            );
-
-        }
-
-
-        // ----------------------------------------------------
-        // Load products.
-        // ----------------------------------------------------
 
         await loadProducts();
-
-
-        // ----------------------------------------------------
-        // Initialize product search.
-        // ----------------------------------------------------
-
         initializeSearch();
-
-
-        // ----------------------------------------------------
-        // Initialize product modal.
-        // ----------------------------------------------------
-
         initializeProductModal();
 
-
-        console.log(
-            "Products page initialized successfully."
-        );
+        console.log("Products page initialized");
 
     } catch (error) {
-
-        // ----------------------------------------------------
-        // Handle unexpected initialization errors.
-        // ----------------------------------------------------
-
-        console.error(
-            "Products initialization error:",
-            error
-        );
-
+        console.error("Products initialization error:", error);
     }
-
 }
-
-
-// ============================================================
-// Load Products
-// Retrieves all products from the backend.
-// ============================================================
 
 async function loadProducts() {
-
     try {
+        const result = await window.api.getProducts();
+        products = Array.isArray(result) ? result : [];
 
-        const result =
-            await window.api.getProducts();
-
-
-        // ----------------------------------------------------
-        // Validate backend response.
-        // ----------------------------------------------------
-
-        if (Array.isArray(result)) {
-
-            products = result;
-
-        } else {
-
-            products = [];
-
-            console.warn(
-                "Invalid products response:",
-                result
+        const filter = sessionStorage.getItem("productsFilter");
+        if (filter === "lowStock") {
+            sessionStorage.removeItem("productsFilter");
+            const lowStockProducts = products.filter(
+                p => Number(p.quantity) <= Number(p.minStock)
             );
+            renderProducts(lowStockProducts);
 
+            const searchInput = document.getElementById("productSearch");
+            if (searchInput) searchInput.placeholder = "Showing low stock items only — clear search to see all";
+        } else {
+            renderProducts(products);
         }
-
-
-        // ----------------------------------------------------
-        // Render products.
-        // ----------------------------------------------------
-
-        renderProducts(products);
-
-
     } catch (error) {
-
-        console.error(
-            "Failed to load products:",
-            error
-        );
-
+        console.error("Failed to load products:", error);
         products = [];
-
-        renderProducts(products);
-
     }
-
 }
-
-
-// ============================================================
-// Initialize Search
-// Connects the product search input to the filtering logic.
-// ============================================================
-
-function initializeSearch() {
-
-    const searchInput =
-        document.getElementById(
-            "productSearch"
-        );
-
-
-    if (!searchInput) {
-
-        console.warn(
-            "Product search input not found."
-        );
-
-        return;
-
-    }
-
-
-    searchInput.addEventListener(
-        "input",
-        handleSearch
-    );
-
-}
-
-
-// ============================================================
-// Handle Product Search
-// Filters products by name, SKU, barcode, or category.
-// ============================================================
-
-function handleSearch(event) {
-
-    const searchTerm =
-        event.target.value
-            .trim()
-            .toLowerCase();
-
-
-    // --------------------------------------------------------
-    // Display all products when the search is empty.
-    // --------------------------------------------------------
-
-    if (!searchTerm) {
-
-        renderProducts(products);
-
-        return;
-
-    }
-
-
-    // --------------------------------------------------------
-    // Filter products.
-    // --------------------------------------------------------
-
-    const filteredProducts =
-        products.filter(
-            (product) => {
-
-                const name =
-                    String(
-                        product.name ?? ""
-                    ).toLowerCase();
-
-
-                const sku =
-                    String(
-                        product.sku ?? ""
-                    ).toLowerCase();
-
-
-                const barcode =
-                    String(
-                        product.barcode ?? ""
-                    ).toLowerCase();
-
-
-                const category =
-                    String(
-                        product.category ?? ""
-                    ).toLowerCase();
-
-
-                return (
-                    name.includes(searchTerm) ||
-                    sku.includes(searchTerm) ||
-                    barcode.includes(searchTerm) ||
-                    category.includes(searchTerm)
-                );
-
-            }
-        );
-
-
-    renderProducts(
-        filteredProducts
-    );
-
-}
-
-
-// ============================================================
-// Render Products
-// Renders the products table or the empty state.
-// ============================================================
 
 function renderProducts(productList) {
+    const tbody = document.getElementById("productsTableBody");
+    const emptyState = document.getElementById("productsEmptyState");
+    const tableContainer = document.getElementById("productsTableContainer");
 
-    const tableContainer =
-        document.getElementById(
-            "productsTableContainer"
-        );
+    if (!tbody) return;
 
-
-    const tableBody =
-        document.getElementById(
-            "productsTableBody"
-        );
-
-
-    const emptyState =
-        document.getElementById(
-            "productsEmptyState"
-        );
-
-
-    if (
-        !tableContainer ||
-        !tableBody ||
-        !emptyState
-    ) {
-
-        console.warn(
-            "Products UI elements were not found."
-        );
-
-        return;
-
-    }
-
-
-    // --------------------------------------------------------
-    // Clear current table rows.
-    // --------------------------------------------------------
-
-    tableBody.innerHTML = "";
-
-
-    // --------------------------------------------------------
-    // Show empty state when no products exist.
-    // --------------------------------------------------------
+    tbody.innerHTML = "";
 
     if (!productList.length) {
-
-        tableContainer.style.display =
-            "none";
-
-
-        emptyState.style.display =
-            "flex";
-
-
+        if (tableContainer) tableContainer.style.display = "none";
+        if (emptyState) emptyState.style.display = "flex";
         return;
-
     }
 
+    if (tableContainer) tableContainer.style.display = "block";
+    if (emptyState) emptyState.style.display = "none";
 
-    // --------------------------------------------------------
-    // Show products table.
-    // --------------------------------------------------------
+    productList.forEach(product => {
+        const row = document.createElement("tr");
+        const lowStock = Number(product.quantity) <= Number(product.minStock);
 
-    tableContainer.style.display =
-        "block";
+        row.innerHTML = `
+            <td>${escapeHtml(product.sku || "-")}</td>
+            <td><strong>${escapeHtml(product.name)}</strong></td>
+            <td>${escapeHtml(product.category || "-")}</td>
+            <td>${Number(product.price || product.priceRetail || 0).toFixed(2)}</td>
+            <td>${lowStock ? `<span class="low-stock-badge">${product.quantity}</span>` : product.quantity}</td>
+            <td><span class="status-badge ${product.active !== false ? 'active' : 'inactive'}">${product.active !== false ? getTranslation('common.active') : getTranslation('common.inactive')}</span></td>
+            <td>
+                <div class="table-actions">
+                    ${canWriteProducts ? `<button class="table-action-button edit" data-action="edit" data-id="${product.id}">${getTranslation('products.actionButtons.edit')}</button>` : ''}
+                    ${canWriteProducts ? `<button class="table-action-button delete" data-action="delete" data-id="${product.id}">${getTranslation('products.actionButtons.delete')}</button>` : ''}
+                </div>
+            </td>
+        `;
+        tbody.appendChild(row);
+    });
 
-
-    emptyState.style.display =
-        "none";
-
-
-    // --------------------------------------------------------
-    // Create product rows.
-    // --------------------------------------------------------
-
-    productList.forEach(
-        (product) => {
-
-            const row =
-                document.createElement(
-                    "tr"
-                );
-
-
-            row.innerHTML = `
-
-                <td>
-                    ${escapeHtml(product.sku)}
-                </td>
-
-                <td>
-                    ${escapeHtml(product.name)}
-                </td>
-
-                <td>
-                    ${escapeHtml(product.category)}
-                </td>
-
-                <td>
-                    ${Number(
-                        product.price ?? 0
-                    ).toFixed(2)}
-                </td>
-
-                <td>
-                    ${Number(
-                        product.quantity ?? 0
-                    )}
-                </td>
-
-                <td>
-                    ${
-                        product.active !== false
-                            ? "Active"
-                            : "Inactive"
-                    }
-                </td>
-
-                <td>
-
-                    <button
-                        type="button"
-                        class="edit-product"
-                        data-id="${product.id}"
-                    >
-                        Edit
-                    </button>
-
-                    <button
-                        type="button"
-                        class="delete-product"
-                        data-id="${product.id}"
-                    >
-                        Delete
-                    </button>
-
-                </td>
-
-            `;
-
-
-            tableBody.appendChild(row);
-
-        }
-    );
-
+    tbody.addEventListener("click", handleProductAction);
 }
 
+function handleProductAction(e) {
+    const btn = e.target.closest("[data-action]");
+    if (!btn) return;
+    const id = btn.dataset.id;
+    const action = btn.dataset.action;
 
-// ============================================================
-// Initialize Product Modal
-// Connects all buttons and form controls to the modal.
-// ============================================================
+    if (action === "edit") openEditProductModal(id);
+    if (action === "delete") deleteProductHandler(id);
+}
+
+function initializeSearch() {
+    const searchInput = document.getElementById("productSearch");
+    if (!searchInput) return;
+
+    searchInput.addEventListener("input", () => {
+        const term = searchInput.value.trim().toLowerCase();
+
+        if (!term) {
+            renderProducts(products);
+            return;
+        }
+
+        const filtered = products.filter(p =>
+            (p.name || "").toLowerCase().includes(term) ||
+            (p.sku || "").toLowerCase().includes(term) ||
+            (p.barcode || "").toLowerCase().includes(term) ||
+            (p.category || "").toLowerCase().includes(term)
+        );
+
+        renderProducts(filtered);
+    });
+}
 
 function initializeProductModal() {
+    const modal = document.getElementById("productModal");
+    const addBtn = document.getElementById("addProductButton");
+    const emptyAddBtn = document.getElementById("emptyAddProductButton");
+    const closeBtn = document.getElementById("closeProductModal");
+    const cancelBtn = document.getElementById("cancelProductButton");
+    const form = document.getElementById("productForm");
 
-    const modal =
-        document.getElementById(
-            "productModal"
-        );
-
-
-    const addProductButton =
-        document.getElementById(
-            "addProductButton"
-        );
-
-
-    const emptyAddProductButton =
-        document.getElementById(
-            "emptyAddProductButton"
-        );
-
-
-    const closeButton =
-        document.getElementById(
-            "closeProductModal"
-        );
-
-
-    const cancelButton =
-        document.getElementById(
-            "cancelProductButton"
-        );
-
-
-    const productForm =
-        document.getElementById(
-            "productForm"
-        );
-
-
-    if (!modal) {
-
-        console.warn(
-            "Product modal was not found."
-        );
-
-        return;
-
+    if (!canWriteProducts) {
+        if (addBtn) addBtn.style.display = "none";
+        if (emptyAddBtn) emptyAddBtn.style.display = "none";
     }
 
+    addBtn?.addEventListener("click", () => openProductModal());
+    emptyAddBtn?.addEventListener("click", () => openProductModal());
+    closeBtn?.addEventListener("click", closeProductModal);
+    cancelBtn?.addEventListener("click", closeProductModal);
+    form?.addEventListener("submit", handleProductSubmit);
 
-    // --------------------------------------------------------
-    // Open modal from page header button.
-    // --------------------------------------------------------
-
-    if (addProductButton) {
-
-        addProductButton.addEventListener(
-            "click",
-            openProductModal
-        );
-
-    }
-
-
-    // --------------------------------------------------------
-    // Open modal from empty state button.
-    // --------------------------------------------------------
-
-    if (emptyAddProductButton) {
-
-        emptyAddProductButton.addEventListener(
-            "click",
-            openProductModal
-        );
-
-    }
-
-
-    // --------------------------------------------------------
-    // Close modal using the X button.
-    // --------------------------------------------------------
-
-    if (closeButton) {
-
-        closeButton.addEventListener(
-            "click",
-            closeProductModal
-        );
-
-    }
-
-
-    // --------------------------------------------------------
-    // Close modal using Cancel.
-    // --------------------------------------------------------
-
-    if (cancelButton) {
-
-        cancelButton.addEventListener(
-            "click",
-            closeProductModal
-        );
-
-    }
-
-
-    // --------------------------------------------------------
-    // Close modal when clicking outside the modal content.
-    // --------------------------------------------------------
-
-    modal.addEventListener(
-        "click",
-        (event) => {
-
-            if (
-                event.target === modal
-            ) {
-
-                closeProductModal();
-
-            }
-
-        }
-    );
-
-
-    // --------------------------------------------------------
-    // Handle product form submission.
-    // --------------------------------------------------------
-
-    if (productForm) {
-
-        productForm.addEventListener(
-            "submit",
-            handleProductSubmit
-        );
-
-    }
-
+    modal?.addEventListener("click", (e) => {
+        if (e.target === modal) closeProductModal();
+    });
 }
 
+function openProductModal(product = null) {
+    if (!canWriteProducts) return;
 
-// ============================================================
-// Open Product Modal
-// Resets the form and displays the modal.
-// ============================================================
+    editingProductId = product ? product.id : null;
+    const modal = document.getElementById("productModal");
+    const form = document.getElementById("productForm");
+    const title = document.querySelector("#productModal .modal-header h2");
+    const errorEl = document.getElementById("productFormError");
 
-function openProductModal() {
+    if (!modal || !form) return;
 
-    const modal =
-        document.getElementById(
-            "productModal"
-        );
-
-
-    const form =
-        document.getElementById(
-            "productForm"
-        );
-
-
-    const errorElement =
-        document.getElementById(
-            "productFormError"
-        );
-
-
-    if (!modal) {
-
-        return;
-
+    form.reset();
+    if (errorEl) {
+        errorEl.style.display = "none";
+        errorEl.textContent = "";
     }
 
+    if (product) {
+        if (title) title.textContent = getTranslation("products.modal.editTitle");
+        document.getElementById("productName").value = product.name || "";
+        document.getElementById("productSku").value = product.sku || "";
+        document.getElementById("productBarcode").value = product.barcode || "";
+        document.getElementById("productCategory").value = product.category || "";
 
-    // --------------------------------------------------------
-    // Reset form fields before creating a new product.
-    // --------------------------------------------------------
+        if (document.getElementById("productPriceRetail")) document.getElementById("productPriceRetail").value = product.priceRetail ?? product.price ?? 0;
+        if (document.getElementById("productPriceWholesale")) document.getElementById("productPriceWholesale").value = product.priceWholesale ?? 0;
+        if (document.getElementById("productUom")) document.getElementById("productUom").value = product.uom || "pcs";
+        if (document.getElementById("productUomRatio")) document.getElementById("productUomRatio").value = product.uomRatio || 1;
 
-    if (form) {
-
-        form.reset();
-
+        document.getElementById("productQuantity").value = product.quantity ?? 0;
+        document.getElementById("productMinStock").value = product.minStock ?? 0;
+        document.getElementById("productActive").checked = product.active !== false;
+    } else {
+        if (title) title.textContent = getTranslation("products.modal.title");
+        if (document.getElementById("productUom")) document.getElementById("productUom").value = "pcs";
+        if (document.getElementById("productUomRatio")) document.getElementById("productUomRatio").value = 1;
     }
 
-
-    // --------------------------------------------------------
-    // Clear previous error message.
-    // --------------------------------------------------------
-
-    if (errorElement) {
-
-        errorElement.textContent = "";
-
-        errorElement.style.display =
-            "none";
-
-    }
-
-
-    // --------------------------------------------------------
-    // Make sure Active Product is enabled by default.
-    // --------------------------------------------------------
-
-    const activeCheckbox =
-        document.getElementById(
-            "productActive"
-        );
-
-
-    if (activeCheckbox) {
-
-        activeCheckbox.checked =
-            true;
-
-    }
-
-
-    // --------------------------------------------------------
-    // Display modal.
-    // --------------------------------------------------------
-
-    modal.style.display =
-        "flex";
-
-
-    // --------------------------------------------------------
-    // Focus the first field.
-    // --------------------------------------------------------
-
-    const nameInput =
-        document.getElementById(
-            "productName"
-        );
-
-
-    if (nameInput) {
-
-        setTimeout(
-            () => nameInput.focus(),
-            50
-        );
-
-    }
-
+    modal.style.display = "flex";
 }
 
-
-// ============================================================
-// Close Product Modal
-// Hides the product modal.
-// ============================================================
+function openEditProductModal(id) {
+    const product = products.find(p => p.id === id);
+    if (product) openProductModal(product);
+}
 
 function closeProductModal() {
-
-    const modal =
-        document.getElementById(
-            "productModal"
-        );
-
-
-    if (!modal) {
-
-        return;
-
-    }
-
-
-    modal.style.display =
-        "none";
-
+    const modal = document.getElementById("productModal");
+    if (modal) modal.style.display = "none";
+    editingProductId = null;
 }
 
+async function handleProductSubmit(e) {
+    e.preventDefault();
 
-// ============================================================
-// Handle Product Form Submission
-// Validates the form and sends product data to the backend.
-// ============================================================
+    const name = document.getElementById("productName").value.trim();
+    const sku = document.getElementById("productSku").value.trim();
+    const barcode = document.getElementById("productBarcode").value.trim();
+    const category = document.getElementById("productCategory").value.trim();
 
-async function handleProductSubmit(event) {
+    const priceRetailVal = document.getElementById("productPriceRetail")?.value || 0;
+    const priceWholesaleVal = document.getElementById("productPriceWholesale")?.value || 0;
+    const uomVal = document.getElementById("productUom")?.value || "pcs";
+    const uomRatioVal = document.getElementById("productUomRatio")?.value || 1;
 
-    event.preventDefault();
-
-
-    const errorElement =
-        document.getElementById(
-            "productFormError"
-        );
-
-
-    // --------------------------------------------------------
-    // Read product form values.
-    // --------------------------------------------------------
-
-    const name =
-        document.getElementById(
-            "productName"
-        )?.value.trim();
-
-
-    const sku =
-        document.getElementById(
-            "productSku"
-        )?.value.trim();
-
-
-    const barcode =
-        document.getElementById(
-            "productBarcode"
-        )?.value.trim();
-
-
-    const category =
-        document.getElementById(
-            "productCategory"
-        )?.value.trim();
-
-
-    const price =
-        Number(
-            document.getElementById(
-                "productPrice"
-            )?.value
-        );
-
-
-    const quantity =
-        Number(
-            document.getElementById(
-                "productQuantity"
-            )?.value || 0
-        );
-
-
-    const minStock =
-        Number(
-            document.getElementById(
-                "productMinStock"
-            )?.value || 0
-        );
-
-
-    const active =
-        document.getElementById(
-            "productActive"
-        )?.checked ?? true;
-
-
-    // --------------------------------------------------------
-    // Validate required product name.
-    // --------------------------------------------------------
+    const quantity = document.getElementById("productQuantity").value;
+    const minStock = document.getElementById("productMinStock").value;
+    const active = document.getElementById("productActive").checked;
 
     if (!name) {
-
-        showProductError(
-            "Product name is required."
-        );
-
+        showProductError(getTranslation("products.errors.nameRequired"));
         return;
-
     }
 
-
-    // --------------------------------------------------------
-    // Validate product price.
-    // --------------------------------------------------------
-
-    if (
-        Number.isNaN(price) ||
-        price < 0
-    ) {
-
-        showProductError(
-            "Please enter a valid product price."
-        );
-
+    if (priceRetailVal === "" || Number(priceRetailVal) < 0) {
+        showProductError(getTranslation("products.errors.priceRequired"));
         return;
-
     }
-
-
-    // --------------------------------------------------------
-    // Validate quantity.
-    // --------------------------------------------------------
-
-    if (
-        Number.isNaN(quantity) ||
-        quantity < 0
-    ) {
-
-        showProductError(
-            "Please enter a valid quantity."
-        );
-
-        return;
-
-    }
-
-
-    // --------------------------------------------------------
-    // Build product object.
-    // --------------------------------------------------------
 
     const productData = {
-
         name,
-
         sku,
-
         barcode,
-
         category,
-
-        price,
-
-        quantity,
-
-        minStock,
-
+        price: Number(priceRetailVal),
+        priceRetail: Number(priceRetailVal),
+        priceWholesale: Number(priceWholesaleVal),
+        quantity: Number(quantity) || 0,
+        minStock: Number(minStock) || 0,
+        uom: uomVal,
+        uomRatio: Number(uomRatioVal) || 1,
         active
-
     };
 
-
-    // ============================================================
-    // Save Product
-    // Sends the product data to the Electron main process through
-    // the secure preload API.
-    // ============================================================
-
     try {
-
-        const result =
-            await window.api.createProduct(
-                productData
-            );
-
-
-        // --------------------------------------------------------
-        // Handle backend validation errors.
-        // --------------------------------------------------------
+        let result;
+        if (editingProductId) {
+            result = await window.api.updateProduct(editingProductId, productData);
+        } else {
+            result = await window.api.createProduct(productData);
+        }
 
         if (!result.success) {
-
-            showProductError(
-                result.message ||
-                "Failed to create product."
-            );
-
+            showProductError(result.message || getTranslation("products.errors.saveFailed"));
             return;
-
         }
 
-
-        // --------------------------------------------------------
-        // Add the newly created product to the local state.
-        // --------------------------------------------------------
-
-        products.push(
-            result.product
-        );
-
-
-        // --------------------------------------------------------
-        // Refresh the products table.
-        // --------------------------------------------------------
-
-        renderProducts(
-            products
-        );
-
-
-        // --------------------------------------------------------
-        // Close the modal after successful creation.
-        // --------------------------------------------------------
-
+        await loadProducts();
         closeProductModal();
 
-
-        // --------------------------------------------------------
-        // Clear the search field so the new product is visible.
-        // --------------------------------------------------------
-
-        const searchInput =
-            document.getElementById(
-                "productSearch"
-            );
-
-
-        if (searchInput) {
-
-            searchInput.value = "";
-
-        }
-
-
-        console.log(
-            "Product created successfully:",
-            result.product
-        );
-
     } catch (error) {
-
-        // --------------------------------------------------------
-        // Handle unexpected product creation errors.
-        // --------------------------------------------------------
-
-        console.error(
-            "Create product error:",
-            error
-        );
-
-        showProductError(
-            "An unexpected error occurred while creating the product."
-        );
-
+        console.error("Save product error:", error);
+        showProductError(getTranslation("products.errors.saveFailed"));
     }
-
 }
 
-
-// ============================================================
-// Show Product Form Error
-// Displays a validation error inside the modal.
-// ============================================================
-
-function showProductError(message) {
-
-    const errorElement =
-        document.getElementById(
-            "productFormError"
-        );
-
-
-    if (!errorElement) {
-
-        return;
-
+function showProductError(msg) {
+    const el = document.getElementById("productFormError");
+    if (el) {
+        el.textContent = msg;
+        el.style.display = "block";
     }
-
-
-    errorElement.textContent =
-        message;
-
-
-    errorElement.style.display =
-        "block";
-
-
-    errorElement.style.background =
-        "#fee2e2";
-
-
-    errorElement.style.color =
-        "#991b1b";
-
 }
 
+async function deleteProductHandler(id) {
+    if (!canWriteProducts) return;
+    if (!confirm(getTranslation("products.confirmDelete"))) return;
 
-// ============================================================
-// Escape HTML
-// Prevents product values from being interpreted as HTML.
-// ============================================================
+    try {
+        const result = await window.api.deleteProduct(id);
+        if (result.success) {
+            await loadProducts();
+        } else {
+            alert(result.message || getTranslation("products.errors.deleteFailed"));
+        }
+    } catch (error) {
+        console.error("Delete product error:", error);
+        alert(getTranslation("common.error"));
+    }
+}
 
 function escapeHtml(value) {
-
-    return String(
-        value ?? ""
-    )
-        .replace(
-            /&/g,
-            "&amp;"
-        )
-        .replace(
-            /</g,
-            "&lt;"
-        )
-        .replace(
-            />/g,
-            "&gt;"
-        )
-        .replace(
-            /"/g,
-            "&quot;"
-        )
-        .replace(
-            /'/g,
-            "&#039;"
-        );
-
+    return String(value ?? "")
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
 }
 
-
-// ============================================================
-// Products Page Entry Point
-// Starts initialization after the DOM is ready.
-// ============================================================
-
-document.addEventListener(
-    "DOMContentLoaded",
-    initializeProducts
-);
+document.addEventListener("DOMContentLoaded", initializeProducts);

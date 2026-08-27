@@ -1,4 +1,4 @@
-import { applyLanguage, toggleLanguage } from "./i18n.js";
+import { loadTranslations, toggleLanguage } from "./i18n.js";
 import "./auth.js";
 
 console.log("ThreeMarket POS Started");
@@ -6,7 +6,7 @@ console.log("ThreeMarket POS Started");
 document.addEventListener("DOMContentLoaded", () => {
     console.log("ThreeMarket POS UI Ready");
 
-    applyLanguage();
+    loadTranslations();
 
     const languageButton =
         document.getElementById("languageButton");

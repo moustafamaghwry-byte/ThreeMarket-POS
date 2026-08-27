@@ -1,0 +1,942 @@
+<!-- ============================================================ -->
+<!-- ThreeMarket POS - Returns Page                               -->
+<!-- Handles invoice search, return selection, confirmation,      -->
+<!-- return summary, receipt preview and thermal receipt printing. -->
+<!-- ============================================================ -->
+
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>
+        Returns - ThreeMarket POS
+    </title>
+
+
+    <!-- ======================================================== -->
+    <!-- Global Styles                                             -->
+    <!-- ======================================================== -->
+
+    <link
+        rel="stylesheet"
+        href="/css/reset.css"
+    >
+
+    <link
+        rel="stylesheet"
+        href="/css/variables.css"
+    >
+
+    <link
+        rel="stylesheet"
+        href="/css/themes.css"
+    >
+
+    <link
+        rel="stylesheet"
+        href="/css/dashboard.css"
+    >
+
+    <link
+        rel="stylesheet"
+        href="/css/returns.css"
+    >
+
+</head>
+
+
+<body>
+
+    <!-- ======================================================== -->
+    <!-- Application Layout                                        -->
+    <!-- ======================================================== -->
+
+    <div class="app-layout">
+
+
+        <!-- ==================================================== -->
+        <!-- Sidebar                                                -->
+        <!-- Loaded dynamically by dashboard.js                     -->
+        <!-- ==================================================== -->
+
+        <div id="sidebar-container"></div>
+
+
+        <!-- ==================================================== -->
+        <!-- Main Content                                           -->
+        <!-- ==================================================== -->
+
+        <main class="main-content">
+
+
+            <!-- ================================================= -->
+            <!-- Topbar                                              -->
+            <!-- Loaded dynamically by dashboard.js                  -->
+            <!-- ================================================= -->
+
+            <div id="topbar-container"></div>
+
+
+            <!-- ================================================= -->
+            <!-- Returns Content                                     -->
+            <!-- ================================================= -->
+
+            <section class="dashboard-content">
+
+                <main class="returns-page">
+
+
+                    <!-- ================================================= -->
+                    <!-- Page Header                                        -->
+                    <!-- ================================================= -->
+
+                    <header class="returns-header">
+
+                        <div class="returns-header-content">
+
+                            <div class="page-eyebrow">
+                                SALES
+                            </div>
+
+                            <h1>
+                                Returns
+                            </h1>
+
+                            <p>
+                                Process full or partial sales returns and refunds
+                            </p>
+
+                        </div>
+
+
+                        <div class="returns-header-status">
+
+                            <span class="status-dot"></span>
+
+                            <span>
+                                Returns
+                            </span>
+
+                        </div>
+
+                    </header>
+
+
+                    <!-- ================================================= -->
+                    <!-- Search Sale                                         -->
+                    <!-- ================================================= -->
+
+                    <section class="tm-card search-card">
+
+                        <div class="card-header">
+
+                            <div>
+
+                                <h2>
+                                    Find Sale
+                                </h2>
+
+                                <p>
+                                    Search for the invoice you want to return
+                                </p>
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="invoice-search">
+
+
+                            <!-- Invoice Number -->
+                            <div class="field">
+
+                                <label for="invoiceSearch">
+                                    Invoice Number
+                                </label>
+
+                                <input
+                                    id="invoiceSearch"
+                                    type="text"
+                                    autocomplete="off"
+                                    placeholder="INV-000001"
+                                >
+
+                            </div>
+
+
+                            <!-- Search Button -->
+                            <button
+                                id="searchInvoiceBtn"
+                                type="button"
+                                class="tm-btn tm-btn-primary search-button"
+                            >
+                                Search
+                            </button>
+
+
+                        </div>
+
+                    </section>
+
+
+                    <!-- ================================================= -->
+                    <!-- Message                                            -->
+                    <!-- ================================================= -->
+
+                    <div
+                        id="message"
+                        class="returns-message"
+                        hidden
+                    ></div>
+
+
+                    <!-- ================================================= -->
+                    <!-- Sale Information                                    -->
+                    <!-- ================================================= -->
+
+                    <section
+                        id="saleInfo"
+                        class="tm-card sale-card"
+                        hidden
+                    >
+
+                        <div class="sale-main-info">
+
+
+                            <!-- Invoice -->
+                            <div class="sale-info-block">
+
+                                <span class="info-label">
+                                    Invoice
+                                </span>
+
+                                <strong id="invoiceLabel">
+                                    -
+                                </strong>
+
+                            </div>
+
+
+                            <!-- Date -->
+                            <div class="sale-info-block">
+
+                                <span class="info-label">
+                                    Date
+                                </span>
+
+                                <strong id="saleDate">
+                                    -
+                                </strong>
+
+                            </div>
+
+
+                            <!-- Payment -->
+                            <div class="sale-info-block">
+
+                                <span class="info-label">
+                                    Payment
+                                </span>
+
+                                <strong id="paymentMethod">
+                                    -
+                                </strong>
+
+                            </div>
+
+
+                            <!-- Sale Total -->
+                            <div class="sale-info-block">
+
+                                <span class="info-label">
+                                    Sale Total
+                                </span>
+
+                                <strong id="saleTotal">
+                                    0.00
+                                </strong>
+
+                            </div>
+
+
+                        </div>
+
+                    </section>
+
+
+                    <!-- ================================================= -->
+                    <!-- Return Products                                     -->
+                    <!-- ================================================= -->
+
+                    <section class="tm-card products-card">
+
+
+                        <!-- Products Header -->
+                        <div class="card-header products-header">
+
+                            <div>
+
+                                <h2>
+                                    Return Products
+                                </h2>
+
+                                <p>
+                                    Select the quantity you want to return
+                                </p>
+
+                            </div>
+
+
+                            <!-- Product Actions -->
+                            <div class="products-actions">
+
+
+                                <!-- VAT Status -->
+                                <span
+                                    id="vatStatus"
+                                    class="vat-badge"
+                                >
+                                    VAT OFF
+                                </span>
+
+
+                                <!-- Full Return -->
+                                <button
+                                    id="fullReturnBtn"
+                                    type="button"
+                                    class="tm-btn tm-btn-secondary"
+                                >
+                                    Full Return
+                                </button>
+
+
+                                <!-- Clear -->
+                                <button
+                                    id="clearReturnBtn"
+                                    type="button"
+                                    class="tm-btn tm-btn-light"
+                                >
+                                    Clear
+                                </button>
+
+
+                            </div>
+
+                        </div>
+
+
+                        <!-- ================================================= -->
+                        <!-- Return Items                                       -->
+                        <!-- ================================================= -->
+
+                        <div
+                            id="returnItems"
+                            class="return-items"
+                        >
+
+                            <div class="empty-state">
+
+                                <div class="empty-icon">
+                                    ↩
+                                </div>
+
+                                <strong>
+                                    No sale selected
+                                </strong>
+
+                                <span>
+                                    Search an invoice above to start a return.
+                                </span>
+
+                            </div>
+
+                        </div>
+
+                    </section>
+
+
+                    <!-- ================================================= -->
+                    <!-- Return Summary                                      -->
+                    <!-- ================================================= -->
+
+                    <section
+                        id="returnSummary"
+                        class="tm-card summary-card"
+                        hidden
+                    >
+
+                        <div class="summary-header">
+
+                            <div>
+
+                                <h2>
+                                    Return Summary
+                                </h2>
+
+                                <p>
+                                    Amount to be refunded
+                                </p>
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="summary-lines">
+
+
+                            <!-- Subtotal -->
+                            <div class="summary-line">
+
+                                <span>
+                                    Subtotal
+                                </span>
+
+                                <strong id="returnSubtotal">
+                                    0.00
+                                </strong>
+
+                            </div>
+
+
+                            <!-- VAT -->
+                            <div class="summary-line">
+
+                                <span>
+                                    VAT
+                                </span>
+
+                                <strong id="returnVat">
+                                    0.00
+                                </strong>
+
+                            </div>
+
+
+                            <!-- Total -->
+                            <div class="summary-line summary-total">
+
+                                <span>
+                                    Return Total
+                                </span>
+
+                                <strong id="returnTotal">
+                                    0.00
+                                </strong>
+
+                            </div>
+
+
+                        </div>
+
+                    </section>
+
+
+                    <!-- ================================================= -->
+                    <!-- Return Reason                                       -->
+                    <!-- ================================================= -->
+
+                    <section class="tm-card reason-card">
+
+                        <div class="field">
+
+                            <label for="returnReason">
+                                Return Reason
+                            </label>
+
+                            <textarea
+                                id="returnReason"
+                                rows="3"
+                                placeholder="Optional return reason..."
+                            ></textarea>
+
+                        </div>
+
+                    </section>
+
+
+                    <!-- ================================================= -->
+                    <!-- Footer Actions                                      -->
+                    <!-- ================================================= -->
+
+                    <footer class="returns-footer">
+
+                        <button
+                            id="submitReturnBtn"
+                            type="button"
+                            class="tm-btn tm-btn-danger process-button"
+                        >
+                            Process Return
+                        </button>
+
+                    </footer>
+
+
+                </main>
+
+            </section>
+
+        </main>
+
+    </div>
+
+
+    <!-- ============================================================ -->
+    <!-- Return Confirmation Modal                                    -->
+    <!-- ============================================================ -->
+
+    <div
+        class="tm-modal-overlay"
+        id="returnConfirmModal"
+        hidden
+    >
+
+        <div
+            class="tm-modal"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="confirmModalTitle"
+        >
+
+
+            <!-- ==================================================== -->
+            <!-- Confirmation Modal Header                             -->
+            <!-- ==================================================== -->
+
+            <div class="tm-modal-header">
+
+                <h3 id="confirmModalTitle">
+                    Confirm Return
+                </h3>
+
+
+                <button
+                    type="button"
+                    class="tm-modal-close"
+                    id="confirmModalClose"
+                    aria-label="Close"
+                >
+                    &times;
+                </button>
+
+            </div>
+
+
+            <!-- ==================================================== -->
+            <!-- Confirmation Modal Body                                -->
+            <!-- ==================================================== -->
+
+            <div class="tm-modal-body">
+
+
+                <p class="tm-modal-note">
+                    Please review the return details before confirming.
+                </p>
+
+
+                <!-- Invoice -->
+                <div class="confirm-invoice-row">
+
+                    <span>
+                        Invoice:
+                    </span>
+
+                    <strong id="confirmInvoiceLabel">
+                        -
+                    </strong>
+
+                </div>
+
+
+                <!-- Returned Items -->
+                <div
+                    class="confirm-items"
+                    id="confirmItemsList"
+                ></div>
+
+
+                <!-- Totals -->
+                <div
+                    class="confirm-totals"
+                    id="confirmTotals"
+                ></div>
+
+
+            </div>
+
+
+            <!-- ==================================================== -->
+            <!-- Confirmation Modal Footer                              -->
+            <!-- ==================================================== -->
+
+            <div class="tm-modal-footer">
+
+
+                <button
+                    type="button"
+                    class="btn btn-secondary"
+                    id="confirmCancelBtn"
+                >
+                    Cancel
+                </button>
+
+
+                <button
+                    type="button"
+                    class="btn btn-danger"
+                    id="confirmOkBtn"
+                >
+                    Confirm Return
+                </button>
+
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- ============================================================ -->
+    <!-- Return Receipt Preview Modal                                 -->
+    <!-- Shows the receipt before printing.                            -->
+    <!-- ============================================================ -->
+
+    <div
+        class="tm-modal-overlay"
+        id="receiptPreviewModal"
+        hidden
+    >
+
+        <div
+            class="tm-modal receipt-preview-modal"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="receiptPreviewTitle"
+        >
+
+
+            <!-- ==================================================== -->
+            <!-- Receipt Preview Header                                 -->
+            <!-- ==================================================== -->
+
+            <div class="tm-modal-header">
+
+                <h3 id="receiptPreviewTitle">
+                    Return Receipt
+                </h3>
+
+
+                <button
+                    type="button"
+                    class="tm-modal-close"
+                    id="receiptPreviewClose"
+                    aria-label="Close"
+                >
+                    &times;
+                </button>
+
+            </div>
+
+
+            <!-- ==================================================== -->
+            <!-- Receipt Preview Body                                    -->
+            <!-- ==================================================== -->
+
+            <div class="tm-modal-body receipt-preview-body">
+
+
+                <!-- ================================================= -->
+                <!-- Thermal Receipt                                     -->
+                <!-- ================================================= -->
+
+                <div
+                    id="returnReceipt"
+                    class="receipt-template"
+                >
+
+
+                    <!-- ============================================= -->
+                    <!-- Receipt Header                                  -->
+                    <!-- ============================================= -->
+
+                    <div class="receipt-header">
+
+                        <h2>
+                            ThreeMarket
+                        </h2>
+
+                        <p>
+                            RETURN RECEIPT
+                        </p>
+
+                    </div>
+
+
+                    <!-- ============================================= -->
+                    <!-- Receipt Metadata                                -->
+                    <!-- ============================================= -->
+
+                    <div class="receipt-meta">
+
+
+                        <!-- Return Number -->
+                        <div>
+
+                            <span>
+                                Return:
+                            </span>
+
+                            <strong id="rcptReturnLabel">
+                                -
+                            </strong>
+
+                        </div>
+
+
+                        <!-- Date -->
+                        <div>
+
+                            <span>
+                                Date:
+                            </span>
+
+                            <span id="rcptDate">
+                                -
+                            </span>
+
+                        </div>
+
+
+                        <!-- Invoice -->
+                        <div>
+
+                            <span>
+                                Invoice:
+                            </span>
+
+                            <span id="rcptInvoice">
+                                -
+                            </span>
+
+                        </div>
+
+
+                        <!-- Cashier -->
+                        <div>
+
+                            <span>
+                                Cashier:
+                            </span>
+
+                            <span id="rcptCashier">
+                                -
+                            </span>
+
+                        </div>
+
+
+                    </div>
+
+
+                    <!-- ============================================= -->
+                    <!-- Divider                                         -->
+                    <!-- ============================================= -->
+
+                    <div class="receipt-divider"></div>
+
+
+                    <!-- ============================================= -->
+                    <!-- Returned Items                                 -->
+                    <!-- ============================================= -->
+
+                    <table class="receipt-items">
+
+                        <thead>
+
+                            <tr>
+
+                                <th>
+                                    Item
+                                </th>
+
+                                <th>
+                                    Qty
+                                </th>
+
+                                <th>
+                                    Total
+                                </th>
+
+                            </tr>
+
+                        </thead>
+
+
+                        <tbody id="rcptItems"></tbody>
+
+                    </table>
+
+
+                    <!-- ============================================= -->
+                    <!-- Divider                                         -->
+                    <!-- ============================================= -->
+
+                    <div class="receipt-divider"></div>
+
+
+                    <!-- ============================================= -->
+                    <!-- Receipt Totals                                  -->
+                    <!-- ============================================= -->
+
+                    <div class="receipt-totals">
+
+
+                        <!-- Subtotal -->
+                        <div>
+
+                            <span>
+                                Subtotal
+                            </span>
+
+                            <span id="rcptSubtotal">
+                                0.00
+                            </span>
+
+                        </div>
+
+
+                        <!-- VAT -->
+                        <div>
+
+                            <span>
+                                VAT
+                            </span>
+
+                            <span id="rcptVat">
+                                0.00
+                            </span>
+
+                        </div>
+
+
+                        <!-- Grand Total -->
+                        <div class="grand">
+
+                            <span>
+                                REFUND TOTAL
+                            </span>
+
+                            <span id="rcptTotal">
+                                0.00
+                            </span>
+
+                        </div>
+
+
+                    </div>
+
+
+                    <!-- ============================================= -->
+                    <!-- Return Reason                                   -->
+                    <!-- ============================================= -->
+
+                    <div
+                        class="receipt-reason"
+                        id="rcptReasonRow"
+                        hidden
+                    >
+
+                        <span>
+                            Reason:
+                        </span>
+
+                        <span id="rcptReason"></span>
+
+                    </div>
+
+
+                    <!-- ============================================= -->
+                    <!-- Receipt Footer                                  -->
+                    <!-- ============================================= -->
+
+                    <div class="receipt-footer">
+
+                        <p>
+                            Thank you for your business!
+                        </p>
+
+                        <p>
+                            ThreeMarket POS
+                        </p>
+
+                    </div>
+
+
+                </div>
+
+            </div>
+
+
+            <!-- ==================================================== -->
+            <!-- Receipt Preview Footer                                 -->
+            <!-- ==================================================== -->
+
+            <div class="tm-modal-footer">
+
+
+                <!-- Close Preview -->
+                <button
+                    type="button"
+                    class="btn btn-secondary"
+                    id="receiptSkipBtn"
+                >
+                    Close
+                </button>
+
+
+                <!-- Print Receipt -->
+                <button
+                    type="button"
+                    class="btn btn-danger"
+                    id="receiptPrintBtn"
+                >
+                    🖨️ Print Receipt
+                </button>
+
+
+            </div>
+
+
+        </div>
+
+    </div>
+
+
+    <!-- ============================================================ -->
+    <!-- Application Scripts                                          -->
+    <!-- ============================================================ -->
+
+    <script
+        type="module"
+        src="/js/dashboard.js"
+    ></script>
+
+
+    <script
+        src="/js/returns.js"
+    ></script>
+
+
+</body>
+
+</html>

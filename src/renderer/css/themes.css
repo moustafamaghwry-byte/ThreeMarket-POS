@@ -1,0 +1,7 @@
+/* =========================================================
+   Reserved for theme switching (e.g. a future dark mode).
+   The active theme today is the light palette defined in
+   variables.css. When a toggle is added, alternate values
+   can live here under a [data-theme="dark"] selector,
+   without touching component stylesheets.
+   ========================================================= */

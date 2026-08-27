@@ -1,0 +1,149 @@
+<!-- ============================================================
+ThreeMarket POS - Sales History
+Sales history page loaded dynamically by the application router.
+============================================================ -->
+
+<section class="sales-history-page">
+
+    <!-- ========================================================
+    Page Header
+    ======================================================== -->
+
+    <header class="page-header">
+        <h1>Sales History</h1>
+        <span class="page-subtitle" id="salesCount"></span>
+    </header>
+
+
+    <!-- ========================================================
+    Filters
+    ======================================================== -->
+
+    <section class="filters-bar">
+
+        <div class="filter-group">
+            <label for="dateFrom">From</label>
+            <input type="date" id="dateFrom">
+        </div>
+
+        <div class="filter-group">
+            <label for="dateTo">To</label>
+            <input type="date" id="dateTo">
+        </div>
+
+        <div class="filter-group filter-search">
+            <label for="searchInput">Search</label>
+            <input
+                type="text"
+                id="searchInput"
+                placeholder="Invoice #..."
+                autocomplete="off"
+            >
+        </div>
+
+        <button
+            type="button"
+            class="btn btn-primary"
+            id="applyFiltersBtn"
+        >
+            Apply
+        </button>
+
+        <button
+            type="button"
+            class="btn btn-secondary"
+            id="clearFiltersBtn"
+        >
+            Clear
+        </button>
+
+    </section>
+
+
+    <!-- ========================================================
+    Summary
+    ======================================================== -->
+
+    <section class="summary-cards">
+
+        <div class="summary-card">
+
+            <span class="summary-label">
+                Invoices
+            </span>
+
+            <strong
+                class="summary-value"
+                id="sumCount"
+            >
+                0
+            </strong>
+
+        </div>
+
+
+        <div class="summary-card success">
+
+            <span class="summary-label">
+                Total Sales
+            </span>
+
+            <strong
+                class="summary-value"
+                id="sumTotal"
+            >
+                0.00
+            </strong>
+
+        </div>
+
+
+        <div class="summary-card danger">
+
+            <span class="summary-label">
+                Returned Amount
+            </span>
+
+            <strong
+                class="summary-value"
+                id="sumReturned"
+            >
+                0.00
+            </strong>
+
+        </div>
+
+    </section>
+
+
+    <!-- ========================================================
+    Sales History Table
+    ======================================================== -->
+
+    <section class="table-container">
+
+        <table class="history-table">
+
+            <thead>
+
+                <tr>
+                    <th>Invoice #</th>
+                    <th>Date & Time</th>
+                    <th>Payment</th>
+                    <th>Items</th>
+                    <th>Subtotal</th>
+                    <th>VAT</th>
+                    <th>Total</th>
+                    <th>Return Status</th>
+                    <th>Actions</th>
+                </tr>
+
+            </thead>
+
+            <tbody id="salesBody"></tbody>
+
+        </table>
+
+    </section>
+
+</section>

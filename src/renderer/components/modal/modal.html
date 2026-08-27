@@ -1,257 +1,99 @@
 <!-- ============================================================
      ThreeMarket POS - Product Modal
-     Modal used to create and edit products.
      ============================================================ -->
 
-<div
-    id="productModal"
-    class="modal-overlay"
-    style="display: none;"
->
-
-    <!-- Product Modal -->
+<div id="productModal" class="modal-overlay" style="display: none;">
     <div class="modal">
-
-        <!-- Modal Header -->
         <div class="modal-header">
-
             <div>
-                <h2 data-i18n="products.modal.title">
-                    Add Product
-                </h2>
-
-                <p data-i18n="products.modal.subtitle">
-                    Add a new product to your inventory
-                </p>
+                <h2 data-i18n="products.modal.title">Add Product</h2>
+                <p data-i18n="products.modal.subtitle">Add a new product to your inventory</p>
             </div>
-
-            <button
-                type="button"
-                id="closeProductModal"
-                class="modal-close"
-            >
-                ×
-            </button>
-
+            <button type="button" id="closeProductModal" class="modal-close">×</button>
         </div>
 
-
-        <!-- Product Form -->
-        <form
-            id="productForm"
-            class="product-form"
-        >
-
-            <!-- Product Name -->
+        <form id="productForm" class="product-form">
             <div class="form-group">
-
                 <label for="productName">
-                    <span data-i18n="products.form.name">
-                        Product Name
-                    </span>
-
-                    <span class="required">
-                        *
-                    </span>
+                    <span data-i18n="products.form.name">Product Name</span>
+                    <span class="required">*</span>
                 </label>
-
-                <input
-                    type="text"
-                    id="productName"
-                    name="name"
-                    required
-                    autocomplete="off"
-                >
-
+                <input type="text" id="productName" name="name" required autocomplete="off">
             </div>
 
-
-            <!-- SKU -->
             <div class="form-group">
-
-                <label for="productSku">
-                    <span data-i18n="products.form.sku">
-                        SKU
-                    </span>
-                </label>
-
-                <input
-                    type="text"
-                    id="productSku"
-                    name="sku"
-                    autocomplete="off"
-                >
-
+                <label for="productSku"><span data-i18n="products.form.sku">SKU</span></label>
+                <input type="text" id="productSku" name="sku" autocomplete="off">
             </div>
 
-
-            <!-- Barcode -->
             <div class="form-group">
-
-                <label for="productBarcode">
-                    <span data-i18n="products.form.barcode">
-                        Barcode
-                    </span>
-                </label>
-
-                <input
-                    type="text"
-                    id="productBarcode"
-                    name="barcode"
-                    autocomplete="off"
-                >
-
+                <label for="productBarcode"><span data-i18n="products.form.barcode">Barcode</span></label>
+                <input type="text" id="productBarcode" name="barcode" autocomplete="off">
             </div>
 
-
-            <!-- Category -->
             <div class="form-group">
-
-                <label for="productCategory">
-                    <span data-i18n="products.form.category">
-                        Category
-                    </span>
-                </label>
-
-                <input
-                    type="text"
-                    id="productCategory"
-                    name="category"
-                    autocomplete="off"
-                >
-
+                <label for="productCategory"><span data-i18n="products.form.category">Category</span></label>
+                <input type="text" id="productCategory" name="category" autocomplete="off">
             </div>
 
-
-            <!-- Price -->
             <div class="form-group">
-
-                <label for="productPrice">
-
-                    <span data-i18n="products.form.price">
-                        Price
-                    </span>
-
-                    <span class="required">
-                        *
-                    </span>
-
+                <label for="productPriceRetail">
+                    <span data-i18n="products.form.priceRetail">Retail Price</span>
+                    <span class="required">*</span>
                 </label>
-
-                <input
-                    type="number"
-                    id="productPrice"
-                    name="price"
-                    min="0"
-                    step="0.01"
-                    required
-                >
-
+                <input type="number" id="productPriceRetail" name="priceRetail" min="0" step="0.01" required>
             </div>
 
-
-            <!-- Quantity -->
             <div class="form-group">
-
-                <label for="productQuantity">
-
-                    <span data-i18n="products.form.quantity">
-                        Quantity
-                    </span>
-
-                </label>
-
-                <input
-                    type="number"
-                    id="productQuantity"
-                    name="quantity"
-                    min="0"
-                    step="1"
-                    value="0"
-                >
-
+                <label for="productPriceWholesale"><span data-i18n="products.form.priceWholesale">Wholesale Price</span></label>
+                <input type="number" id="productPriceWholesale" name="priceWholesale" min="0" step="0.01">
             </div>
 
-
-            <!-- Minimum Stock -->
             <div class="form-group">
-
-                <label for="productMinStock">
-
-                    <span data-i18n="products.form.minStock">
-                        Minimum Stock
-                    </span>
-
-                </label>
-
-                <input
-                    type="number"
-                    id="productMinStock"
-                    name="minStock"
-                    min="0"
-                    step="1"
-                    value="0"
-                >
-
+                <label for="productUom"><span data-i18n="products.form.uom">Unit of Measure</span></label>
+                <select id="productUom" name="uom">
+                    <option value="pcs">Piece (pcs)</option>
+                    <option value="kg">Kilogram (kg)</option>
+                    <option value="g">Gram (g)</option>
+                    <option value="l">Liter (l)</option>
+                    <option value="ml">Milliliter (ml)</option>
+                    <option value="box">Box</option>
+                    <option value="pack">Pack</option>
+                </select>
             </div>
 
+            <div class="form-group">
+                <label for="productUomRatio"><span data-i18n="products.form.uomRatio">UOM Ratio (1 Box = ? pcs)</span></label>
+                <input type="number" id="productUomRatio" name="uomRatio" min="1" step="1" value="1" placeholder="Leave 1 for single unit">
+            </div>
 
-            <!-- Active Status -->
+            <div class="form-group">
+                <label for="productQuantity"><span data-i18n="products.form.quantity">Quantity</span></label>
+                <input type="number" id="productQuantity" name="quantity" min="0" step="1" value="0">
+            </div>
+
+            <div class="form-group">
+                <label for="productMinStock"><span data-i18n="products.form.minStock">Minimum Stock</span></label>
+                <input type="number" id="productMinStock" name="minStock" min="0" step="1" value="0">
+            </div>
+
             <div class="form-group checkbox-group">
-
                 <label>
-
-                    <input
-                        type="checkbox"
-                        id="productActive"
-                        name="active"
-                        checked
-                    >
-
-                    <span data-i18n="products.form.active">
-                        Active Product
-                    </span>
-
+                    <input type="checkbox" id="productActive" name="active" checked>
+                    <span data-i18n="products.form.active">Active Product</span>
                 </label>
-
             </div>
 
+            <div id="productFormError" class="form-error" style="display: none;"></div>
 
-            <!-- Form Error -->
-            <div
-                id="productFormError"
-                class="form-error"
-                style="display: none;"
-            ></div>
-
-
-            <!-- Modal Actions -->
             <div class="modal-actions">
-
-                <button
-                    type="button"
-                    id="cancelProductButton"
-                    class="secondary-button"
-                >
-                    <span data-i18n="common.cancel">
-                        Cancel
-                    </span>
+                <button type="button" id="cancelProductButton" class="secondary-button">
+                    <span data-i18n="common.cancel">Cancel</span>
                 </button>
-
-                <button
-                    type="submit"
-                    id="saveProductButton"
-                    class="primary-button"
-                >
-                    <span data-i18n="common.save">
-                        Save Product
-                    </span>
+                <button type="submit" id="saveProductButton" class="primary-button">
+                    <span data-i18n="common.save">Save Product</span>
                 </button>
-
             </div>
-
         </form>
-
     </div>
-
 </div>

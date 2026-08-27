@@ -1,195 +1,221 @@
 // ============================================================
 // ThreeMarket POS - Product Service
-// Handles product business operations between the renderer
-// process and the product repository.
+// Handles product CRUD with JSON file persistence.
 // ============================================================
 
-const productRepository =
-    require("../repositories/product.repository");
+const fs = require("fs");
+const path = require("path");
+const crypto = require("crypto");
 
+// ============================================================
+// Configuration
+// ============================================================
+
+const DATA_DIR = path.join(__dirname, "../../data");
+const PRODUCTS_FILE = path.join(DATA_DIR, "products.json");
+
+// ============================================================
+// Helpers
+// ============================================================
+
+function ensureDataDir() {
+    if (!fs.existsSync(DATA_DIR)) {
+        fs.mkdirSync(DATA_DIR, { recursive: true });
+    }
+}
+
+function loadProducts() {
+    ensureDataDir();
+    if (!fs.existsSync(PRODUCTS_FILE)) return [];
+
+    try {
+        const data = fs.readFileSync(PRODUCTS_FILE, "utf-8");
+        const parsed = JSON.parse(data);
+        return Array.isArray(parsed) ? parsed : [];
+    } catch (error) {
+        console.error("[Product] Load error:", error);
+        return [];
+    }
+}
+
+function saveProducts(products) {
+    ensureDataDir();
+    try {
+        fs.writeFileSync(PRODUCTS_FILE, JSON.stringify(products, null, 4), "utf-8");
+        return true;
+    } catch (error) {
+        console.error("[Product] Save error:", error);
+        return false;
+    }
+}
 
 // ============================================================
 // Get All Products
-// Returns all products from the repository.
 // ============================================================
 
 function getAllProducts() {
-
-    return productRepository.getAll();
-
+    return loadProducts();
 }
 
+// ============================================================
+// Get Product By ID
+// ============================================================
+
+function getProductById(id) {
+    const products = getAllProducts();
+    return products.find((p) => p.id === id) || null;
+}
 
 // ============================================================
 // Create Product
-// Validates the product data and creates a new product.
 // ============================================================
 
 function createProduct(productData) {
-
-    // --------------------------------------------------------
-    // Validate product data.
-    // --------------------------------------------------------
-
-    if (!productData) {
-
-        return {
-            success: false,
-            message: "Product data is required."
-        };
-
-    }
-
-
-    // --------------------------------------------------------
-    // Validate product name.
-    // --------------------------------------------------------
-
-    if (
-        !productData.name ||
-        !String(productData.name).trim()
-    ) {
-
+    const name = productData.name?.trim();
+    if (!name) {
         return {
             success: false,
             message: "Product name is required."
         };
-
     }
 
+    const priceVal = productData.priceRetail ?? productData.price;
+    const price = Number(priceVal);
 
-    // --------------------------------------------------------
-    // Validate product price.
-    // --------------------------------------------------------
-
-    const price =
-        Number(productData.price);
-
-
-    if (
-        Number.isNaN(price) ||
-        price < 0
-    ) {
-
+    if (priceVal === undefined || priceVal === "" || Number.isNaN(price) || price < 0) {
         return {
             success: false,
-            message: "Invalid product price."
+            message: "Please enter a valid product price."
         };
-
     }
 
-
-    // --------------------------------------------------------
-    // Validate quantity.
-    // --------------------------------------------------------
-
-    const quantity =
-        Number(productData.quantity ?? 0);
-
-
-    if (
-        Number.isNaN(quantity) ||
-        quantity < 0
-    ) {
-
-        return {
-            success: false,
-            message: "Invalid product quantity."
-        };
-
-    }
-
-
-    // --------------------------------------------------------
-    // Check SKU uniqueness when provided.
-    // --------------------------------------------------------
-
+    const products = loadProducts();
     if (productData.sku) {
+        const skuExists = products.some(
+            (p) => p.sku && p.sku.toLowerCase() === productData.sku.trim().toLowerCase()
+        );
 
-        const existingProduct =
-            productRepository.getBySku(
-                productData.sku
-            );
-
-
-        if (existingProduct) {
-
+        if (skuExists) {
             return {
                 success: false,
                 message: "SKU already exists."
             };
-
         }
-
     }
 
+    const newProduct = {
+        id: crypto.randomUUID(),
+        sku: productData.sku?.trim() || "",
+        barcode: productData.barcode?.trim() || "",
+        name: name,
+        category: productData.category?.trim() || "",
+        price: price,
+        priceRetail: price,
+        priceWholesale: Number(productData.priceWholesale) || 0,
+        cost: Number(productData.cost) || 0,
+        quantity: Number(productData.quantity) || 0,
+        minStock: Number(productData.minStock) || 0,
+        uom: productData.uom || productData.unit || "pcs",
+        uomRatio: Number(productData.uomRatio) || 1,
+        active: productData.active !== false,
+        createdAt: new Date().toISOString()
+    };
 
-    // --------------------------------------------------------
-    // Check barcode uniqueness when provided.
-    // --------------------------------------------------------
+    products.push(newProduct);
 
-    if (productData.barcode) {
-
-        const existingProduct =
-            productRepository.getByBarcode(
-                productData.barcode
-            );
-
-
-        if (existingProduct) {
-
-            return {
-                success: false,
-                message: "Barcode already exists."
-            };
-
-        }
-
+    if (!saveProducts(products)) {
+        return {
+            success: false,
+            message: "Failed to save product."
+        };
     }
 
-
-    // --------------------------------------------------------
-    // Create the product through the repository.
-    // --------------------------------------------------------
-
-    const product =
-        productRepository.create({
-
-            ...productData,
-
-            name:
-                String(
-                    productData.name
-                ).trim(),
-
-            price,
-
-            quantity
-
-        });
-
-
-    // --------------------------------------------------------
-    // Return the created product.
-    // --------------------------------------------------------
+    console.log("[Product] Created:", newProduct.name);
 
     return {
         success: true,
-        product
+        product: newProduct
     };
-
 }
 
+// ============================================================
+// Update Product
+// ============================================================
+
+function updateProduct(id, updates) {
+    const products = loadProducts();
+    const index = products.findIndex((p) => p.id === id);
+
+    if (index === -1) {
+        return {
+            success: false,
+            message: "Product not found."
+        };
+    }
+
+    const updatedRetail = updates.priceRetail ?? updates.price ?? products[index].priceRetail ?? products[index].price;
+
+    products[index] = {
+        ...products[index],
+        ...updates,
+        price: Number(updatedRetail) || 0,
+        priceRetail: Number(updatedRetail) || 0,
+        priceWholesale: Number(updates.priceWholesale ?? products[index].priceWholesale) || 0,
+        uom: updates.uom || updates.unit || products[index].uom || "pcs",
+        uomRatio: Number(updates.uomRatio ?? products[index].uomRatio) || 1,
+        id: products[index].id,
+        updatedAt: new Date().toISOString()
+    };
+
+    if (!saveProducts(products)) {
+        return {
+            success: false,
+            message: "Failed to update product."
+        };
+    }
+
+    return {
+        success: true,
+        product: products[index]
+    };
+}
 
 // ============================================================
-// Product Service API
-// Exports product operations used by Electron IPC handlers.
+// Delete Product
+// ============================================================
+
+function deleteProduct(id) {
+    const products = loadProducts();
+    const filtered = products.filter((p) => p.id !== id);
+
+    if (filtered.length === products.length) {
+        return {
+            success: false,
+            message: "Product not found."
+        };
+    }
+
+    if (!saveProducts(filtered)) {
+        return {
+            success: false,
+            message: "Failed to delete product."
+        };
+    }
+
+    return {
+        success: true,
+        message: "Product deleted successfully."
+    };
+}
+
+// ============================================================
+// Export
 // ============================================================
 
 module.exports = {
-
     getAllProducts,
-
-    createProduct
-
+    getProductById,
+    createProduct,
+    updateProduct,
+    deleteProduct
 };

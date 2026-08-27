@@ -5,12 +5,13 @@
   "main": "electron/main.js",
   "author": "Mostafa Maghwry",
   "license": "MIT",
-  "scripts": {
-    "dev": "concurrently \"vite\" \"wait-on http://localhost:5173 && electron .\"",
-    "start": "electron .",
-    "build": "vite build",
-    "preview": "vite preview"
-  },
+ "scripts": {
+        "dev": "concurrently \"vite\" \"wait-on http://localhost:5173 && electron .\"",
+        "start": "electron .",
+        "build": "vite build",
+        "preview": "vite preview",
+        "start:prod": "cross-env NODE_ENV=production electron ."
+    },
   "dependencies": {
     "electron": "^43.3.0"
   },

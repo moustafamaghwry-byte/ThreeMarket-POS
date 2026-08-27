@@ -1,340 +1,193 @@
-<!-- ============================================================
-     ThreeMarket POS - Products Page
-     Product management page with search, table, empty state,
-     shared application components, and product modal.
-     ============================================================ -->
-
 <!DOCTYPE html>
-
 <html lang="en" dir="ltr">
 
 <head>
-
-    <!-- ========================================================
-         Document Metadata
-         ======================================================== -->
-
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ThreeMarket POS — Products</title>
 
-    <meta
-        name="viewport"
-        content="width=device-width, initial-scale=1.0"
-    >
-
-    <title>ThreeMarket POS - Products</title>
-
-
-    <!-- ========================================================
-         Global Styles
-         ======================================================== -->
-
-    <link
-        rel="stylesheet"
-        href="/css/reset.css"
-    >
-
-    <link
-        rel="stylesheet"
-        href="/css/variables.css"
-    >
-
-    <link
-        rel="stylesheet"
-        href="/css/themes.css"
-    >
-
-    <link
-        rel="stylesheet"
-        href="/css/dashboard.css"
-    >
-
-    <link
-        rel="stylesheet"
-        href="/css/products.css"
-    >
-
+    <link rel="stylesheet" href="/css/reset.css">
+    <link rel="stylesheet" href="/css/variables.css">
+    <link rel="stylesheet" href="/css/themes.css">
+    <link rel="stylesheet" href="/css/dashboard.css">
+    <link rel="stylesheet" href="/css/products.css">
+<base target="_blank">
 </head>
-
 
 <body>
 
-    <!-- ========================================================
-         Application Layout
-         ======================================================== -->
-
     <div class="app-layout">
 
-
-        <!-- ====================================================
-             Sidebar Container
-             Sidebar component is loaded dynamically by
-             component-loader.js.
-             ==================================================== -->
-
+        <!-- Sidebar -->
         <div id="sidebar-container"></div>
 
-
-        <!-- ====================================================
-             Main Content
-             ==================================================== -->
-
+        <!-- Main Content -->
         <main class="main-content">
 
-
-            <!-- =================================================
-                 Topbar Container
-                 Topbar component is loaded dynamically.
-                 ================================================= -->
-
+            <!-- Topbar -->
             <div id="topbar-container"></div>
 
+            <!-- Products Content -->
+            <section class="products-content">
 
-            <!-- =================================================
-                 Products Content
-                 ================================================= -->
-
-            <section class="page-content">
-
-
-                <!-- =============================================
-                     Page Header
-                     ============================================= -->
-
-                <div class="page-header">
-
+                <div class="products-header">
                     <div>
-
-                        <h1
-                            data-i18n="products.title"
-                        >
-                            Products
-                        </h1>
-
-
-                        <p
-                            data-i18n="products.subtitle"
-                        >
-                            Manage your products
-                        </p>
-
+                        <h1 data-i18n="products.title">Products</h1>
+                        <p class="page-subtitle" data-i18n="products.subtitle">Manage your inventory</p>
                     </div>
-
-
-                    <!-- =========================================
-                         Add Product Button
-                         ========================================= -->
-
-                    <button
-                        type="button"
-                        id="addProductButton"
-                        class="primary-button"
-                    >
-
-                        <span aria-hidden="true">
-                            +
-                        </span>
-
-                        <span
-                            data-i18n="products.add"
-                        >
-                            Add Product
-                        </span>
-
-                    </button>
-
+                    <button id="addProductButton" class="primary-button" data-i18n="products.addProduct">Add Product</button>
                 </div>
-
-
-                <!-- =============================================
-                     Products Toolbar
-                     ============================================= -->
 
                 <div class="products-toolbar">
-
-
-                    <!-- Search Products -->
-
-                    <input
-                        type="text"
-                        id="productSearch"
-                        class="search-input"
-                        placeholder="Search products..."
-                        data-i18n-placeholder="products.search"
-                        autocomplete="off"
-                    >
-
-                </div>
-
-
-                <!-- =============================================
-                     Products Table Container
-                     ============================================= -->
-
-                <div
-                    id="productsTableContainer"
-                    class="table-container"
-                >
-
-                    <table class="data-table">
-
-
-                        <!-- =====================================
-                             Table Header
-                             ===================================== -->
-
-                        <thead>
-
-                            <tr>
-
-                                <th
-                                    data-i18n="products.sku"
-                                >
-                                    SKU
-                                </th>
-
-
-                                <th
-                                    data-i18n="products.name"
-                                >
-                                    Product
-                                </th>
-
-
-                                <th
-                                    data-i18n="products.category"
-                                >
-                                    Category
-                                </th>
-
-
-                                <th
-                                    data-i18n="products.price"
-                                >
-                                    Price
-                                </th>
-
-
-                                <th
-                                    data-i18n="products.stock"
-                                >
-                                    Stock
-                                </th>
-
-
-                                <th
-                                    data-i18n="products.status"
-                                >
-                                    Status
-                                </th>
-
-
-                                <th
-                                    data-i18n="products.actions"
-                                >
-                                    Actions
-                                </th>
-
-                            </tr>
-
-                        </thead>
-
-
-                        <!-- =====================================
-                             Products Table Body
-                             Products are injected by products.js.
-                             ===================================== -->
-
-                        <tbody
-                            id="productsTableBody"
+                    <div class="products-search-wrap">
+                        <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                            <circle cx="7" cy="7" r="4.3" stroke="currentColor" stroke-width="1.4"/>
+                            <path d="M13 13L10.3 10.3" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>
+                        </svg>
+                        <input
+                            type="text"
+                            id="productSearch"
+                            data-i18n-placeholder="products.searchPlaceholder"
+                            placeholder="Search products…"
+                            autocomplete="off"
                         >
-
-                            <!-- Products will be loaded here -->
-
-                        </tbody>
-
-                    </table>
-
-                </div>
-
-
-                <!-- =============================================
-                     Empty State
-                     Displayed when there are no products.
-                     ============================================= -->
-
-                <div
-                    id="productsEmptyState"
-                    class="empty-state"
-                >
-
-                    <div
-                        class="empty-icon"
-                        aria-hidden="true"
-                    >
-                        📦
                     </div>
+                </div>
 
+                <!-- Table -->
+                <div class="products-table-container" id="productsTableContainer">
+                    <table class="products-table">
+                        <thead>
+                            <tr>
+                                <th data-i18n="products.table.sku">SKU</th>
+                                <th data-i18n="products.table.name">Name</th>
+                                <th data-i18n="products.table.category">Category</th>
+                                <th data-i18n="products.table.price">Price</th>
+                                <th data-i18n="products.table.quantity">Quantity</th>
+                                <th data-i18n="products.table.status">Status</th>
+                                <th data-i18n="products.table.actions">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="productsTableBody"></tbody>
+                    </table>
+                </div>
 
-                    <h2
-                        data-i18n="products.empty"
-                    >
-                        No products found
-                    </h2>
-
-
-                    <p
-                        data-i18n="products.emptyDescription"
-                    >
-                        Add your first product to get started.
-                    </p>
-
-
-                    <!-- Optional Empty State Add Button -->
-
-                    <button
-                        type="button"
-                        id="emptyAddProductButton"
-                        class="primary-button"
-                    >
-
-                        <span aria-hidden="true">
-                            +
-                        </span>
-
-                        <span
-                            data-i18n="products.add"
-                        >
-                            Add Product
-                        </span>
-
-                    </button>
-
+                <!-- Empty State -->
+                <div class="products-empty-state" id="productsEmptyState" style="display: none;">
+                    <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                        <path d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/>
+                    </svg>
+                    <h3 data-i18n="products.emptyTitle">No products yet</h3>
+                    <p data-i18n="products.emptyDesc">Add your first product to get started</p>
+                    <button id="emptyAddProductButton" class="primary-button" data-i18n="products.addProduct">Add Product</button>
                 </div>
 
             </section>
 
         </main>
 
-
-        <!-- ====================================================
-             Modal Container
-             Product modal is loaded dynamically by
-             component-loader.js.
-             ==================================================== -->
-
-        <div id="modal-container"></div>
-
     </div>
 
+    <!-- ============================================================
+         Product Modal — Inline (always present in DOM)
+         ============================================================ -->
+    <div id="productModal" class="modal-overlay" style="display: none;">
+        <div class="modal">
+            <div class="modal-header">
+                <div>
+                    <h2 data-i18n="products.modal.title">Add Product</h2>
+                    <p data-i18n="products.modal.subtitle">Add a new product to your inventory</p>
+                </div>
+                <button type="button" id="closeProductModal" class="modal-close">×</button>
+            </div>
 
-    <!-- ========================================================
-         Products Page JavaScript
-         ======================================================== -->
+            <form id="productForm" class="product-form">
+                <div class="form-group">
+                    <label for="productName">
+                        <span data-i18n="products.form.name">Product Name</span>
+                        <span class="required">*</span>
+                    </label>
+                    <input type="text" id="productName" name="name" required autocomplete="off">
+                </div>
 
-    <script
-        type="module"
-        src="/js/products.js"
-    ></script>
+                <div class="form-group">
+                    <label for="productSku"><span data-i18n="products.form.sku">SKU</span></label>
+                    <input type="text" id="productSku" name="sku" autocomplete="off">
+                </div>
+
+                <div class="form-group">
+                    <label for="productBarcode"><span data-i18n="products.form.barcode">Barcode</span></label>
+                    <input type="text" id="productBarcode" name="barcode" autocomplete="off">
+                </div>
+
+                <div class="form-group">
+                    <label for="productCategory"><span data-i18n="products.form.category">Category</span></label>
+                    <input type="text" id="productCategory" name="category" autocomplete="off">
+                </div>
+
+                <div class="form-group">
+                    <label for="productPriceRetail">
+                        <span data-i18n="products.form.priceRetail">Retail Price</span>
+                        <span class="required">*</span>
+                    </label>
+                    <input type="number" id="productPriceRetail" name="priceRetail" min="0" step="0.01" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="productPriceWholesale"><span data-i18n="products.form.priceWholesale">Wholesale Price</span></label>
+                    <input type="number" id="productPriceWholesale" name="priceWholesale" min="0" step="0.01">
+                </div>
+
+                <div class="form-group">
+                    <label for="productUom"><span data-i18n="products.form.uom">Unit of Measure</span></label>
+                    <select id="productUom" name="uom">
+                        <option value="pcs">Piece (pcs)</option>
+                        <option value="kg">Kilogram (kg)</option>
+                        <option value="g">Gram (g)</option>
+                        <option value="l">Liter (l)</option>
+                        <option value="ml">Milliliter (ml)</option>
+                        <option value="box">Box</option>
+                        <option value="pack">Pack</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="productUomRatio"><span data-i18n="products.form.uomRatio">UOM Ratio (1 Box = ? pcs)</span></label>
+                    <input type="number" id="productUomRatio" name="uomRatio" min="1" step="1" value="1">
+                </div>
+
+                <div class="form-group">
+                    <label for="productQuantity"><span data-i18n="products.form.quantity">Quantity</span></label>
+                    <input type="number" id="productQuantity" name="quantity" min="0" step="1" value="0">
+                </div>
+
+                <div class="form-group">
+                    <label for="productMinStock"><span data-i18n="products.form.minStock">Minimum Stock</span></label>
+                    <input type="number" id="productMinStock" name="minStock" min="0" step="1" value="0">
+                </div>
+
+                <div class="form-group checkbox-group">
+                    <label>
+                        <input type="checkbox" id="productActive" name="active" checked>
+                        <span data-i18n="products.form.active">Active Product</span>
+                    </label>
+                </div>
+
+                <div id="productFormError" class="form-error" style="display: none;"></div>
+
+                <div class="modal-actions">
+                    <button type="button" id="cancelProductButton" class="secondary-button">
+                        <span data-i18n="common.cancel">Cancel</span>
+                    </button>
+                    <button type="submit" id="saveProductButton" class="primary-button">
+                        <span data-i18n="common.save">Save Product</span>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script type="module" src="/js/products.js"></script>
 
 </body>
 

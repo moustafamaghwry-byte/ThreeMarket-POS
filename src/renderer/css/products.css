@@ -1,335 +1,308 @@
-/* ============================================================
-   ThreeMarket POS - Products Page Styles
-   Defines the layout, toolbar, table, buttons, and empty state
-   for the Products management page.
-   ============================================================ */
+/* =========================================================
+   Products Page
+   ========================================================= */
 
-
-/* ------------------------------------------------------------
-   Products Page Layout
-   ------------------------------------------------------------ */
-
-.page-content {
-    padding: 30px;
+.products-content {
+    padding: 24px;
 }
 
-
-/* ------------------------------------------------------------
-   Page Header
-   ------------------------------------------------------------ */
-
-.page-header {
+.products-header {
     display: flex;
-    justify-content: space-between;
     align-items: center;
-    margin-bottom: 25px;
-}
-
-.page-header h1 {
-    margin: 0;
-}
-
-.page-header p {
-    margin-top: 6px;
-    opacity: 0.7;
-}
-
-
-/* ------------------------------------------------------------
-   Primary Button
-   ------------------------------------------------------------ */
-
-.primary-button {
-    border: none;
-    border-radius: 8px;
-    padding: 12px 18px;
-    cursor: pointer;
-    font-size: 14px;
-}
-
-
-/* ------------------------------------------------------------
-   Products Search Toolbar
-   ------------------------------------------------------------ */
-
-.products-toolbar {
+    justify-content: space-between;
     margin-bottom: 20px;
 }
 
-.search-input {
-    width: 100%;
-    max-width: 400px;
-    padding: 12px 14px;
-    border-radius: 8px;
-    border: 1px solid #ddd;
-    font-size: 14px;
-    box-sizing: border-box;
+.products-header h1 {
+    font-size: var(--fs-xl);
+    font-weight: 700;
 }
 
+.products-toolbar {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 20px;
+}
 
-/* ------------------------------------------------------------
-   Products Table
-   ------------------------------------------------------------ */
+.products-search-wrap {
+    position: relative;
+    flex: 1;
+    max-width: 360px;
+}
 
-.table-container {
-    background: white;
-    border-radius: 12px;
+.products-search-wrap svg {
+    position: absolute;
+    left: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--text-tertiary);
+    pointer-events: none;
+}
+
+[dir="rtl"] .products-search-wrap svg {
+    left: auto;
+    right: 12px;
+}
+
+.products-search-wrap input {
+    width: 100%;
+    padding: 10px 12px 10px 38px;
+    border: 1.5px solid var(--border);
+    border-radius: var(--radius-sm);
+    background: var(--surface);
+    color: var(--text);
+    font-size: var(--fs-sm);
+    outline: none;
+    transition: border-color var(--duration-fast) var(--ease);
+}
+
+[dir="rtl"] .products-search-wrap input {
+    padding: 10px 38px 10px 12px;
+}
+
+.products-search-wrap input:focus {
+    border-color: var(--primary);
+    box-shadow: var(--focus-ring);
+}
+
+/* ---------- Table ---------- */
+
+.products-table-container {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
     overflow: hidden;
 }
 
-.data-table {
+.products-table {
     width: 100%;
     border-collapse: collapse;
+    font-size: var(--fs-sm);
 }
 
-.data-table th,
-.data-table td {
-    padding: 14px 16px;
+.products-table thead {
+    background: var(--background);
+    border-bottom: 1px solid var(--border);
+}
+
+.products-table th {
+    padding: 12px 16px;
     text-align: left;
-    border-bottom: 1px solid #eee;
+    font-weight: 600;
+    color: var(--text-secondary);
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    white-space: nowrap;
 }
 
-.data-table th {
+[dir="rtl"] .products-table th {
+    text-align: right;
+}
+
+.products-table td {
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--divider);
+    color: var(--text);
+    vertical-align: middle;
+}
+
+.products-table tbody tr:last-child td {
+    border-bottom: 0;
+}
+
+.products-table tbody tr:hover {
+    background: var(--background);
+}
+
+/* ---------- Status Badge ---------- */
+
+.status-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 10px;
+    border-radius: var(--radius-full);
+    font-size: 11px;
     font-weight: 600;
 }
 
-
-/* ------------------------------------------------------------
-   Empty State
-   This section is shown when there are no products.
-   ------------------------------------------------------------ */
-
-.empty-state {
-    display: block;
-    text-align: center;
-    padding: 60px 20px;
+.status-badge.active {
+    background: var(--success-subtle);
+    color: var(--success);
 }
 
-.empty-icon {
-    font-size: 48px;
-    margin-bottom: 15px;
+.status-badge.inactive {
+    background: var(--n-100);
+    color: var(--text-tertiary);
 }
 
-.empty-state h2 {
-    margin: 0 0 10px;
-}
+/* ---------- Low Stock Badge ---------- */
 
-.empty-state p {
-    margin: 0;
-    opacity: 0.7;
-}
-/* ============================================================
-   Product Modal
-   Styles the Add/Edit Product modal and its form controls.
-   ============================================================ */
-
-.modal-overlay {
-    position: fixed;
-    inset: 0;
-
-    display: flex;
-
+.low-stock-badge {
+    display: inline-flex;
     align-items: center;
     justify-content: center;
-
-    padding: 30px;
-
-    background: rgba(0, 0, 0, 0.45);
-
-    z-index: 1000;
+    padding: 2px 8px;
+    background: var(--danger-subtle);
+    color: var(--danger);
+    border-radius: var(--radius-full);
+    font-size: 11px;
+    font-weight: 700;
 }
 
+/* ---------- Table Actions ---------- */
 
-.modal {
-    width: 100%;
-    max-width: 650px;
-
-    max-height: 90vh;
-
-    overflow-y: auto;
-
-    background: white;
-
-    border-radius: 14px;
-
-    box-shadow:
-        0 20px 60px rgba(0, 0, 0, 0.2);
-}
-
-
-.modal-header {
+.table-actions {
     display: flex;
-
-    align-items: flex-start;
-    justify-content: space-between;
-
-    padding: 24px;
-
-    border-bottom: 1px solid #eee;
+    gap: 6px;
 }
 
-
-.modal-header h2 {
-    margin: 0;
-}
-
-
-.modal-header p {
-    margin: 6px 0 0;
-
-    opacity: 0.65;
-}
-
-
-.modal-close {
-    border: none;
-
-    background: transparent;
-
-    font-size: 28px;
-
-    line-height: 1;
-
+.table-action-button {
+    padding: 5px 10px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-xs);
+    background: var(--surface);
+    color: var(--text-secondary);
+    font-size: 11px;
+    font-weight: 600;
     cursor: pointer;
+    transition: all var(--duration-fast) var(--ease);
 }
 
+.table-action-button:hover {
+    border-color: var(--primary);
+    color: var(--primary);
+    background: var(--primary-subtle);
+}
+
+.table-action-button.delete:hover {
+    border-color: var(--danger);
+    color: var(--danger);
+    background: var(--danger-subtle);
+}
+
+.table-action-button.adjust:hover {
+    border-color: var(--warning);
+    color: var(--warning);
+    background: var(--warning-subtle);
+}
+
+/* ---------- Empty State ---------- */
+
+.products-empty-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+    padding: 60px 20px;
+    color: var(--text-tertiary);
+    text-align: center;
+}
+
+.products-empty-state svg {
+    color: var(--n-300);
+}
+
+.products-empty-state h3 {
+    font-size: var(--fs-lg);
+    font-weight: 600;
+    color: var(--text);
+}
+
+.products-empty-state p {
+    font-size: var(--fs-sm);
+    max-width: 320px;
+}
+
+/* ---------- Product Modal ---------- */
 
 .product-form {
-    padding: 24px;
-
-    display: grid;
-
-    grid-template-columns:
-        repeat(2, minmax(0, 1fr));
-
-    gap: 18px;
-}
-
-
-.form-group {
     display: flex;
-
     flex-direction: column;
-
-    gap: 7px;
+    gap: 16px;
+    padding: 24px;
 }
 
-
-.form-group label {
-    font-weight: 600;
-
-    font-size: 14px;
-}
-
-
-.form-group input {
-    width: 100%;
-
-    box-sizing: border-box;
-
-    padding: 11px 12px;
-
-    border: 1px solid #ddd;
-
-    border-radius: 8px;
-
-    font-size: 14px;
-
-    outline: none;
-}
-
-
-.form-group input:focus {
-    border-color: #2563eb;
-}
-
-
-.required {
-    color: #dc2626;
-}
-
-
-.checkbox-group {
-    justify-content: center;
-}
-
-
-.checkbox-group label {
+.product-form .form-group {
     display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
 
-    flex-direction: row;
+.product-form .form-group label {
+    font-size: var(--fs-sm);
+    font-weight: 600;
+    color: var(--text-secondary);
+}
 
+.product-form .form-group label .required {
+    color: var(--danger);
+    margin-left: 2px;
+}
+
+.product-form .form-group input,
+.product-form .form-group select {
+    padding: 10px 12px;
+    border: 1.5px solid var(--border);
+    border-radius: var(--radius-sm);
+    background: var(--surface);
+    color: var(--text);
+    font-size: var(--fs-sm);
+    outline: none;
+    transition: border-color var(--duration-fast) var(--ease);
+}
+
+.product-form .form-group input:focus,
+.product-form .form-group select:focus {
+    border-color: var(--primary);
+    box-shadow: var(--focus-ring);
+}
+
+.product-form .checkbox-group label {
+    display: flex;
     align-items: center;
-
     gap: 8px;
-
     cursor: pointer;
 }
 
-
-.checkbox-group input {
-    width: auto;
+.product-form .checkbox-group input[type="checkbox"] {
+    width: 18px;
+    height: 18px;
+    accent-color: var(--primary);
 }
 
+/* ---------- Form Error ---------- */
 
 .form-error {
-    grid-column: 1 / -1;
-
-    padding: 12px;
-
-    border-radius: 8px;
-
-    background: #fee2e2;
-
-    color: #991b1b;
-
-    font-size: 14px;
+    padding: 10px 12px;
+    background: var(--danger-subtle);
+    color: var(--danger);
+    border-radius: var(--radius-sm);
+    font-size: var(--fs-sm);
+    font-weight: 600;
 }
 
+/* ---------- Responsive ---------- */
 
-.modal-actions {
-    grid-column: 1 / -1;
-
-    display: flex;
-
-    justify-content: flex-end;
-
-    gap: 10px;
-
-    padding-top: 10px;
-}
-
-
-.secondary-button {
-    padding: 11px 18px;
-
-    border: 1px solid #ddd;
-
-    border-radius: 8px;
-
-    background: white;
-
-    cursor: pointer;
-}
-
-
-.modal-actions .primary-button {
-    padding: 11px 20px;
-
-    background: #2563eb;
-
-    color: white;
-
-    border-radius: 8px;
-
-    cursor: pointer;
-}
-
-
-@media (max-width: 700px) {
-
-    .product-form {
-        grid-template-columns: 1fr;
+@media (max-width: 768px) {
+    .products-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 12px;
     }
 
+    .products-toolbar {
+        flex-direction: column;
+    }
+
+    .products-search-wrap {
+        max-width: 100%;
+    }
+
+    .products-table th,
+    .products-table td {
+        padding: 10px 12px;
+    }
 }

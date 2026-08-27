@@ -11,209 +11,146 @@
     <link rel="stylesheet" href="/css/variables.css">
     <link rel="stylesheet" href="/css/themes.css">
     <link rel="stylesheet" href="/css/dashboard.css">
+    <link rel="stylesheet" href="/css/sales-history.css">
+
 </head>
 
 <body>
 
     <div class="app-layout">
 
-        <!-- Sidebar -->
-        <aside class="sidebar">
-
-            <div class="sidebar-brand">
-                <div class="brand-icon">🛒</div>
-
-                <div>
-                    <strong>ThreeMarket</strong>
-                    <span>POS</span>
-                </div>
-            </div>
-
-            <nav class="sidebar-nav">
-
-                <button class="nav-item active" data-page="dashboard">
-                    <span>📊</span>
-                    <span data-i18n="nav.dashboard">Dashboard</span>
-                </button>
-
-                <button class="nav-item" data-page="sales">
-                    <span>🛒</span>
-                    <span data-i18n="nav.sales">Sales</span>
-                </button>
-
-                <button class="nav-item" data-page="products">
-                    <span>📦</span>
-                    <span data-i18n="nav.products">Products</span>
-                </button>
-
-                <button class="nav-item" data-page="inventory">
-                    <span>🏷️</span>
-                    <span data-i18n="nav.inventory">Inventory</span>
-                </button>
-
-                <button class="nav-item" data-page="customers">
-                    <span>👥</span>
-                    <span data-i18n="nav.customers">Customers</span>
-                </button>
-
-                <button class="nav-item" data-page="suppliers">
-                    <span>🚚</span>
-                    <span data-i18n="nav.suppliers">Suppliers</span>
-                </button>
-
-                <button class="nav-item" data-page="reports">
-                    <span>📈</span>
-                    <span data-i18n="nav.reports">Reports</span>
-                </button>
-
-                <button class="nav-item" data-page="settings">
-                    <span>⚙️</span>
-                    <span data-i18n="nav.settings">Settings</span>
-                </button>
-
-            </nav>
-
-            <div class="sidebar-footer">
-
-                <button id="logoutButton" class="logout-button">
-                    🚪
-                    <span data-i18n="nav.logout">Logout</span>
-                </button>
-
-            </div>
-
-        </aside>
+        <!-- Sidebar (dynamic) -->
+        <div id="sidebar-container"></div>
 
         <!-- Main Content -->
         <main class="main-content">
 
-            <!-- Top Bar -->
-            <header class="topbar">
+            <!-- Topbar (dynamic) -->
+            <div id="topbar-container"></div>
 
-                <div>
-                    <h1 data-i18n="dashboard.title">
-                        Dashboard
-                    </h1>
+            <!-- Dynamic Application Content -->
+            <div id="page-content">
 
-                    <p data-i18n="dashboard.welcome">
-                        Welcome to ThreeMarket POS
-                    </p>
-                </div>
+                <!-- Dashboard -->
+                <section class="dashboard-content">
 
-                <div class="user-area">
+                    <div class="stat-grid">
 
-                    <div class="user-info">
-                        <strong id="currentUsername">
-                            Admin
-                        </strong>
+                        <!-- Sales -->
+                        <article class="stat-card">
+                            <div class="stat-icon tone-primary">
+                                <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                                    <circle cx="10" cy="10" r="7" stroke="currentColor" stroke-width="1.5"/>
+                                    <path d="M10 6.5V13.5M12.2 8.1C12.2 7.1 11.2 6.5 10 6.5C8.7 6.5 7.7 7.1 7.7 8C7.7 10 12.3 8.9 12.3 11C12.3 11.9 11.3 12.6 10 12.6C8.8 12.6 7.75 12 7.75 11" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+                                </svg>
+                            </div>
 
-                        <span id="currentRole">
-                            Administrator
-                        </span>
+                            <div>
+                                <small data-i18n="dashboard.sales">Today's sales</small>
+                                <strong id="todaySales">0.00</strong>
+                                <span class="stat-trend"><span data-i18n="dashboard.noDataYet">No data yet</span></span>
+                            </div>
+                        </article>
+
+                        <!-- Transactions -->
+                        <article class="stat-card">
+                            <div class="stat-icon tone-info">
+                                <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                                    <path d="M5.5 2.5H14.5V17.5L12.5 16L10.5 17.5L8.5 16L6.5 17.5L4.5 16V4.5C4.5 3.4 5 2.5 5.5 2.5Z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/>
+                                    <path d="M7 6.5H12M7 9.5H12M7 12.5H10" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>
+                                </svg>
+                            </div>
+
+                            <div>
+                                <small data-i18n="dashboard.transactions">Transactions</small>
+                                <strong id="todayTransactions">0</strong>
+                                <span class="stat-trend"><span data-i18n="dashboard.noDataYet">No data yet</span></span>
+                            </div>
+                        </article>
+
+                        <!-- Products -->
+                        <article class="stat-card">
+                            <div class="stat-icon tone-success">
+                                <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                                    <path d="M2.75 6.4L10 2.5L17.25 6.4V13.6L10 17.5L2.75 13.6V6.4Z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/>
+                                    <path d="M2.75 6.4L10 10M10 10L17.25 6.4M10 10V17.5" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/>
+                                </svg>
+                            </div>
+
+                            <div>
+                                <small data-i18n="dashboard.products">Products</small>
+                                <strong id="totalProducts">0</strong>
+                                <span class="stat-trend"><span data-i18n="dashboard.noDataYet">No data yet</span></span>
+                            </div>
+                        </article>
+
+                        <!-- Low Stock -->
+                        <article class="stat-card stat-card-clickable" id="lowStockCard">
+                            <div class="stat-icon tone-warning">
+                                <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                                    <path d="M10 3L17.5 16H2.5L10 3Z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/>
+                                    <path d="M10 8.5V11.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+                                    <circle cx="10" cy="13.7" r="0.9" fill="currentColor"/>
+                                </svg>
+                            </div>
+
+                            <div>
+                                <small data-i18n="dashboard.lowStock">Low stock</small>
+                                <strong id="lowStock">0</strong>
+                                <span class="stat-trend"><span data-i18n="dashboard.noDataYet">No data yet</span></span>
+                            </div>
+                        </article>
+
+                        <!-- Top Products -->
+                        <article class="stat-card top-products-card">
+                            <div class="top-products-header">
+                                <div class="stat-icon tone-primary">
+                                    <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                                        <path d="M3 15V8M8 15V5M13 15V10M18 15V3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+                                    </svg>
+                                </div>
+                                <select id="topProductsRange" class="top-products-range-select">
+                                    <option value="today" data-i18n="dashboard.rangeToday">Today</option>
+                                    <option value="yesterday" data-i18n="dashboard.rangeYesterday">Yesterday</option>
+                                    <option value="custom" data-i18n="dashboard.rangeCustom">Custom range</option>
+                                </select>
+                            </div>
+
+                            <div id="customRangeInputs" class="custom-range-inputs" style="display: none;">
+                                <input type="date" id="rangeFrom" class="range-date-input">
+                                <span>—</span>
+                                <input type="date" id="rangeTo" class="range-date-input">
+                            </div>
+
+                            <div class="top-products-body">
+                                <small data-i18n="dashboard.topProducts">Top products</small>
+                                <ul class="top-products-list" id="topProductsList">
+                                    <li class="top-products-empty" data-i18n="dashboard.noDataYet">No data yet</li>
+                                </ul>
+                            </div>
+                        </article>
                     </div>
 
-                    <button
-                        id="languageButton"
-                        class="language-button"
-                    >
-                        العربية
-                    </button>
+                    <!-- Welcome -->
+                    <section class="welcome-card">
+                        <div class="welcome-card-head">
+                            <div>
+                                <h2 data-i18n="dashboard.ready">Ready to manage your business?</h2>
+                                <p data-i18n="dashboard.description">ThreeMarket POS brings sales, inventory, and reporting together in one place. Pick a section from the sidebar to get started.</p>
+                            </div>
 
-                </div>
-
-            </header>
-
-            <!-- Dashboard -->
-            <section class="dashboard-content">
-
-                <div class="stat-grid">
-
-                    <!-- Sales -->
-                    <article class="stat-card">
-
-                        <span>💰</span>
-
-                        <div>
-                            <small data-i18n="dashboard.sales">
-                                Today's Sales
-                            </small>
-
-                            <strong id="todaySales">
-                                0.00
-                            </strong>
+                            <div class="welcome-card-illustration">
+                                <svg width="56" height="56" viewBox="0 0 56 56" fill="none">
+                                    <rect x="6" y="6" width="44" height="44" rx="12" stroke="currentColor" stroke-width="1.6" opacity="0.25"/>
+                                    <path d="M17 30L24 37L39 20" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+                                </svg>
+                            </div>
                         </div>
-
-                    </article>
-
-                    <!-- Transactions -->
-                    <article class="stat-card">
-
-                        <span>🧾</span>
-
-                        <div>
-                            <small data-i18n="dashboard.transactions">
-                                Transactions
-                            </small>
-
-                            <strong id="todayTransactions">
-                                0
-                            </strong>
-                        </div>
-
-                    </article>
-
-                    <!-- Products -->
-                    <article class="stat-card">
-
-                        <span>📦</span>
-
-                        <div>
-                            <small data-i18n="dashboard.products">
-                                Products
-                            </small>
-
-                            <strong id="totalProducts">
-                                0
-                            </strong>
-                        </div>
-
-                    </article>
-
-                    <!-- Low Stock -->
-                    <article class="stat-card">
-
-                        <span>⚠️</span>
-
-                        <div>
-                            <small data-i18n="dashboard.lowStock">
-                                Low Stock
-                            </small>
-
-                            <strong id="lowStock">
-                                0
-                            </strong>
-                        </div>
-
-                    </article>
-
-                </div>
-
-                <!-- Welcome -->
-                <section class="welcome-card">
-
-                    <h2 data-i18n="dashboard.ready">
-                        Ready to manage your business?
-                    </h2>
-
-                    <p data-i18n="dashboard.description">
-                        ThreeMarket POS provides a unified retail
-                        management platform for different types
-                        of businesses.
-                    </p>
+                    </section>
 
                 </section>
 
-            </section>
+            </div>
 
         </main>
 

@@ -1,0 +1,137 @@
+/* =========================================================
+   ThreeMarket POS — Settings Page
+   ========================================================= */
+
+.settings-page {
+    max-width: 900px;
+}
+
+/* ---------- Tabs ---------- */
+
+.settings-tabs {
+    display: flex;
+    gap: 4px;
+    margin-bottom: 20px;
+    border-bottom: 1px solid var(--border);
+}
+
+.settings-tab {
+    padding: 10px 16px;
+    border: 0;
+    background: transparent;
+    color: var(--text-secondary);
+    font-size: var(--fs-sm);
+    font-weight: 600;
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    transition: color var(--duration-fast) var(--ease), border-color var(--duration-fast) var(--ease);
+}
+
+.settings-tab:hover {
+    color: var(--text);
+}
+
+.settings-tab.active {
+    color: var(--primary);
+    border-bottom-color: var(--primary);
+}
+
+/* ---------- Panels ---------- */
+
+.settings-panel {
+    display: none;
+}
+
+.settings-panel.active {
+    display: block;
+}
+
+/* ---------- Form ---------- */
+
+.settings-form {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-xs);
+    overflow: hidden;
+}
+
+.settings-section {
+    padding: 24px;
+}
+
+.settings-section + .settings-section {
+    border-top: 1px solid var(--divider);
+}
+
+.settings-section h2 {
+    font-size: var(--fs-md);
+    font-weight: 700;
+    color: var(--text);
+}
+
+.settings-section > p {
+    margin-top: 4px;
+    margin-bottom: 18px;
+    font-size: var(--fs-sm);
+    color: var(--text-secondary);
+}
+
+.settings-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+}
+
+.settings-grid-full {
+    grid-column: 1 / -1;
+}
+
+.field-hint {
+    font-size: 11px;
+    color: var(--text-tertiary);
+}
+
+.settings-message {
+    margin: 0 24px 18px;
+    padding: 11px 13px;
+    border-radius: var(--radius-sm);
+    font-size: var(--fs-sm);
+    font-weight: 500;
+}
+
+.settings-message.is-success {
+    background: var(--success-subtle);
+    color: var(--success);
+}
+
+.settings-message.is-error {
+    background: var(--danger-subtle);
+    color: var(--danger);
+}
+
+.settings-actions {
+    display: flex;
+    justify-content: flex-end;
+    padding: 18px 24px;
+    background: var(--surface-sunken);
+    border-top: 1px solid var(--divider);
+}
+
+/* ---------- RTL ---------- */
+
+[dir="rtl"] .settings-tabs {
+    flex-direction: row-reverse;
+}
+
+/* ---------- Responsive ---------- */
+
+@media (max-width: 700px) {
+    .settings-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .settings-grid-full {
+        grid-column: 1;
+    }
+}

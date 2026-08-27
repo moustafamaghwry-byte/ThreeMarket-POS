@@ -1,18 +1,25 @@
 # Dependencies
 node_modules/
 
-# Build
+# Build output
 dist/
+build/
+out/
 
-# Database
-*.db
-*.sqlite
+# Application runtime data
+data/*.json
 
-# Environment
+# Environment variables
 .env
+.env.*
 
 # Logs
 *.log
+logs/
+
+# OS files
+.DS_Store
+Thumbs.db
 
 # VS Code
 .vscode/

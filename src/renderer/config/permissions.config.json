@@ -1,0 +1,79 @@
+{
+    "allPages": [
+        "dashboard",
+        "sales",
+        "products",
+        "inventory",
+        "customers",
+        "suppliers",
+        "reports",
+        "settings",
+        "users"
+    ],
+    "pageRoutes": {
+        "dashboard": "/pages/dashboard.html",
+        "sales": "/pages/sales.html",
+        "returns": "/pages/returns.html",
+        "products": "/pages/products.html",
+        "inventory": "/pages/inventory.html",
+        "customers": "/pages/customers.html",
+        "suppliers": "/pages/suppliers.html",
+        "reports": "/pages/reports.html",
+        "settings": "/pages/settings.html",
+        "users": "/pages/users.html",
+        "sales-history": "/pages/sales-history.html"
+    },
+    "rolePresets": {
+        "admin": {
+            "dashboard": "write",
+            "sales": "write",
+            "returns": "write",
+            "products": "write",
+            "inventory": "write",
+            "customers": "write",
+            "suppliers": "write",
+            "reports": "write",
+            "settings": "write",
+            "users": "write",
+            "sales-history": "full"
+
+        },
+        "administrator": {
+            "dashboard": "write",
+            "sales": "write",
+            "returns": "write",
+            "products": "write",
+            "inventory": "write",
+            "customers": "write",
+            "suppliers": "write",
+            "reports": "write",
+            "settings": "write",
+            "users": "write",
+            "sales-history": "write"
+        },
+        "manager": {
+            "dashboard": "write",
+            "sales": "write",
+            "products": "write",
+            "inventory": "write",
+            "customers": "write",
+            "suppliers": "write",
+            "reports": "write",
+            "settings": "none",
+            "users": "none",
+            "sales-history": "write"
+        },
+        "cashier": {
+            "dashboard": "none",
+            "sales": "write",
+            "returns": "write",
+            "products": "read",
+            "inventory": "none",
+            "customers": "read",
+            "suppliers": "none",
+            "reports": "none",
+            "settings": "none",
+            "users": "none"
+        }
+    }
+}

@@ -1,22 +1,100 @@
-:root{
+/* =========================================================
+   ThreeMarket POS — Design Tokens
+   A restrained enterprise system in the spirit of the
+   Fluent / Material schools: quiet neutrals, a single
+   confident accent, and low, deliberate elevation.
+   ========================================================= */
 
---primary:#2563EB;
---primary-dark:#1D4ED8;
+:root {
 
---success:#16A34A;
---danger:#DC2626;
---warning:#F59E0B;
+    /* ---- Brand / accent ---- */
+    --primary: #2954D9;
+    --primary-hover: #1F3FB0;
+    --primary-active: #17318C;
+    --primary-subtle: #EAF0FE;
+    --primary-subtle-hover: #DCE7FD;
+    --on-primary: #FFFFFF;
 
---background:#F8FAFC;
---surface:#FFFFFF;
+    /* ---- Semantic ---- */
+    --success: #0F9D58;
+    --success-subtle: #E6F6ED;
+    --danger: #D93025;
+    --danger-subtle: #FCEAE9;
+    --warning: #B7791F;
+    --warning-subtle: #FCF3DF;
+    --info: #2954D9;
+    --info-subtle: #EAF0FE;
 
---sidebar:#0F172A;
+    /* ---- Neutrals (single scale, light theme) ---- */
+    --n-0: #FFFFFF;
+    --n-25: #FBFBFC;
+    --n-50: #F5F6F8;
+    --n-100: #EEF0F3;
+    --n-200: #E2E5EA;
+    --n-300: #CDD2DA;
+    --n-400: #A6ADB8;
+    --n-500: #7C8494;
+    --n-600: #5B6472;
+    --n-700: #414A59;
+    --n-800: #262E3D;
+    --n-900: #14181F;
 
---text:#1E293B;
---text-light:#64748B;
+    /* ---- Surfaces ---- */
+    --background: var(--n-50);
+    --surface: var(--n-0);
+    --surface-sunken: var(--n-25);
+    --sidebar: var(--n-0);
+    --overlay: rgba(20, 24, 31, 0.45);
+    --border: var(--n-200);
+    --border-strong: var(--n-300);
+    --divider: var(--n-100);
 
---radius:14px;
+    /* ---- Text ---- */
+    --text: var(--n-900);
+    --text-secondary: var(--n-600);
+    --text-tertiary: var(--n-500);
+    --text-on-primary: #FFFFFF;
+    --text-link: var(--primary);
 
---shadow:0 12px 30px rgba(0,0,0,.08);
+    /* ---- Focus ring ---- */
+    --focus-ring: 0 0 0 3px rgba(41, 84, 217, 0.28);
 
+    /* ---- Radius ---- */
+    --radius-xs: 6px;
+    --radius-sm: 8px;
+    --radius: 10px;
+    --radius-lg: 14px;
+    --radius-full: 999px;
+
+    /* ---- Elevation (low, deliberate — no glow) ---- */
+    --shadow-xs: 0 1px 2px rgba(20, 24, 31, 0.05);
+    --shadow-sm: 0 1px 2px rgba(20, 24, 31, 0.04), 0 2px 6px rgba(20, 24, 31, 0.05);
+    --shadow-md: 0 4px 10px rgba(20, 24, 31, 0.06), 0 1px 3px rgba(20, 24, 31, 0.06);
+    --shadow-lg: 0 12px 28px rgba(20, 24, 31, 0.10), 0 2px 6px rgba(20, 24, 31, 0.06);
+
+    /* ---- Motion ---- */
+    --ease: cubic-bezier(0.2, 0, 0, 1);
+    --duration-fast: 120ms;
+    --duration: 180ms;
+
+    /* ---- Type scale ---- */
+    --fs-xs: 12px;
+    --fs-sm: 13px;
+    --fs-base: 14.5px;
+    --fs-md: 16px;
+    --fs-lg: 20px;
+    --fs-xl: 26px;
+    --fs-2xl: 32px;
+
+    /* ---- Layout ---- */
+    --sidebar-width: 264px;
+    --topbar-height: 68px;
+
+    /* ---- Font families (Latin default; [dir="rtl"] overrides below) ---- */
+    --font-sans: "Inter", "Segoe UI", -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+    --font-tabular: "Inter", "Segoe UI", sans-serif;
+}
+
+[dir="rtl"] {
+    --font-sans: "IBM Plex Sans Arabic", "Segoe UI", "Inter", system-ui, sans-serif;
 }
