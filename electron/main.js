@@ -4,6 +4,13 @@
 // authentication, products, sales, returns, settings,
 // users, store configuration and cash drawer.
 // ============================================================
+// ============================================================
+// Product Migration Validation
+// ============================================================
+
+const {
+    validateProducts
+} = require("../src/database/validate-products");
 
 const {
     app,
@@ -12,6 +19,48 @@ const {
 } = require("electron");
 
 const path = require("path");
+
+// ============================================================
+// SQLite Database
+// ============================================================
+
+const {
+    initializeDatabase,
+    closeDatabase
+} = require("../src/database/database");
+
+const {
+    runMigrations
+} = require("../src/database/migrations");
+
+// ============================================================
+// Initialize ThreeMarket POS database.
+// ============================================================
+
+// ============================================================
+// Initialize ThreeMarket POS database.
+// ============================================================
+
+// ============================================================
+// Initialize ThreeMarket POS database.
+// Runs migrations and validates migrated product data.
+// ============================================================
+
+function initializeAppDatabase() {
+    const userDataPath = app.getPath("userData");
+
+    console.log(
+        `[Database] Electron userData path: ${userDataPath}`
+    );
+
+    initializeDatabase(userDataPath);
+
+    // Run all pending database migrations.
+    runMigrations();
+
+    // Validate products after migrations complete.
+    validateProducts();
+}
 
 // ============================================================
 // Services
@@ -1074,6 +1123,12 @@ ipcMain.handle(
 
 app.whenReady().then(() => {
 
+    // --------------------------------------------------------
+    // Initialize SQLite Database and Run Migrations
+    // --------------------------------------------------------
+
+    initializeAppDatabase();
+
     console.log(
         "============================================"
     );
@@ -1137,8 +1192,16 @@ app.whenReady().then(() => {
 });
 
 // ============================================================
-// Close Application
+// Close Application Lifecycle
 // ============================================================
+
+// ============================================================
+// Close SQLite connection before application shutdown.
+// ============================================================
+
+app.on("before-quit", () => {
+    closeDatabase();
+});
 
 app.on(
     "window-all-closed",
